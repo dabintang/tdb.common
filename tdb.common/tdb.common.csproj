@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <OutputType>Library</OutputType>
+    <Version>2.1.0.4</Version>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Authors>tangdabin</Authors>
+    <Product>tdb.common</Product>
+    <Description>通用类库</Description>
+    <PackageReleaseNotes>基于.NET Standard 2.1</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Company>tdb</Company>
+    <PackageTags>tdb</PackageTags>
+    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>E:\tdb\github\svn\tdb.common\tdb.common\tdb.common.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>E:\tdb\github\svn\tdb.common\tdb.common\tdb.common.xml</DocumentationFile>
+  </PropertyGroup>
+
+</Project>

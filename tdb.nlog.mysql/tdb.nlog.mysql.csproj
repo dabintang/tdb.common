@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Version>2.1.0.2</Version>
+    <Authors>tangdabin</Authors>
+    <Company>tdb</Company>
+    <Description>nlog保存到mysql的简单封装</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>tdb</PackageTags>
+    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>E:\tdb\github\svn\tdb.common\tdb.nlog.mysql\tdb.nlog.mysql.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.22" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\tdb.nlog\tdb.nlog.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="NLog.config">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>2.1.0.1</Version>
+    <Authors>tangdabin</Authors>
+    <Company>tdb</Company>
+    <Description>csredis简单封装</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageTags>tdb</PackageTags>
+    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>E:\tdb\github\svn\tdb.common\tdb.csredis\tdb.csredis.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSRedisCore" Version="3.6.5" />
+  </ItemGroup>
+
+</Project>

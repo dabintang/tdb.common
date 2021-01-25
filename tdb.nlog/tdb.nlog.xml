@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>tdb.nlog</name>
+    </assembly>
+    <members>
+        <member name="T:tdb.nlog.NLogger">
+            <summary>
+            Nlog日志帮助类
+            Trace 包含大量的信息，例如 protocol payloads。一般仅在开发环境中启用, 仅输出不存文件。
+            Debug  比 Trance 级别稍微粗略，一般仅在开发环境中启用, 仅输出不存文件。
+            Info 一般在生产环境中启用。
+            Warn 一般用于可恢复或临时性错误的非关键问题。
+            Error 一般是异常信息。
+            Fatal - 非常严重的错误！
+            </summary>
+        </member>
+        <member name="M:tdb.nlog.NLogger.#ctor">
+            <summary>
+            构造函数
+            </summary>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Trace(System.String)">
+            <summary>
+            痕迹日志
+            </summary>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Trace(System.Exception,System.String)">
+            <summary>
+            痕迹日志
+            </summary>
+            <param name="ex">异常</param>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Debug(System.String)">
+            <summary>
+            调试日志
+            </summary>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Debug(System.Exception,System.String)">
+            <summary>
+            调试日志
+            </summary>
+            <param name="ex">异常</param>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Info(System.String)">
+            <summary>
+            信息日志
+            </summary>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Info(System.Exception,System.String)">
+            <summary>
+            信息日志
+            </summary>
+            <param name="ex">异常</param>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Warn(System.String)">
+            <summary>
+            警告日志
+            </summary>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Warn(System.Exception,System.String)">
+            <summary>
+            警告日志
+            </summary>
+            <param name="ex">异常</param>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Error(System.String)">
+            <summary>
+            错误日志
+            </summary>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Error(System.Exception,System.String)">
+            <summary>
+            错误日志
+            </summary>
+            <param name="ex">异常</param>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Fatal(System.String)">
+            <summary>
+            致命日志
+            </summary>
+            <param name="msg">日志内容</param>
+        </member>
+        <member name="M:tdb.nlog.NLogger.Fatal(System.Exception,System.String)">
+            <summary>
+            致命日志
+            </summary>
+            <param name="ex">异常</param>
+            <param name="msg">日志内容</param>
+        </member>
+    </members>
+</doc>

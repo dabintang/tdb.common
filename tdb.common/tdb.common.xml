@@ -1,0 +1,269 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>tdb.common</name>
+    </assembly>
+    <members>
+        <member name="T:tdb.common.CheckHelper">
+            <summary>
+            验证帮助类
+            </summary>
+        </member>
+        <member name="M:tdb.common.CheckHelper.IsNumeric(System.Type)">
+            <summary>
+            是否数值类型
+            </summary>
+            <param name="dataType"></param>
+            <returns></returns>
+        </member>
+        <member name="T:tdb.common.CommHelper">
+            <summary>
+            通用帮助类
+            </summary>
+        </member>
+        <member name="M:tdb.common.CommHelper.GetFullFileName(System.String)">
+            <summary>
+            自动帮助拼接上程序根路径
+            </summary>
+            <param name="fileName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:tdb.common.CommHelper.GetLocalIP">
+            <summary>
+            获取本地IP
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:tdb.common.CommHelper.ReflectSet(System.Object,System.String,System.Object)">
+            <summary>
+            反射方式给属性赋值
+            </summary>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+            <param name="propertyValue">值</param>
+        </member>
+        <member name="M:tdb.common.CommHelper.ReflectGet(System.Object,System.String)">
+            <summary>
+            反射方式获取属性值
+            </summary>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+        </member>
+        <member name="M:tdb.common.CommHelper.EmitSet``1(``0,System.String,System.Object)">
+            <summary>
+            emit方式给属性赋值
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+            <param name="propertyValue">值</param>
+        </member>
+        <member name="M:tdb.common.CommHelper.EmitGet``1(``0,System.String)">
+            <summary>
+            emit方式获取属性值
+            </summary>
+            <typeparam name="T">对象类型</typeparam>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
+        <member name="M:tdb.common.CommHelper.EmitGet``2(``0,System.String)">
+            <summary>
+            emit方式获取属性值
+            </summary>
+            <typeparam name="ObjectT">对象类型</typeparam>
+            <typeparam name="ReturnT">返回类型</typeparam>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
+        <member name="T:tdb.common.CvtHelper">
+            <summary>
+            转换帮助类
+            </summary>
+        </member>
+        <member name="M:tdb.common.CvtHelper.ToDictionary(System.Object,System.Boolean)">
+            <summary>
+            对象转换为字典
+            </summary>
+            <param name="obj">待转化的对象</param>
+            <param name="isIgnoreNull">是否忽略NULL</param>
+            <returns></returns>
+        </member>
+        <member name="M:tdb.common.CvtHelper.ToTimeStamp(System.DateTime,tdb.common.Enums.EnumAccurateUTC)">
+            <summary>
+            转UTC时间戳，单位（秒）
+            </summary>
+            <param name="clientTime">本地时间</param>
+            <param name="accurate">时间戳精度（默认：秒）</param>
+            <returns></returns>
+        </member>
+        <member name="M:tdb.common.CvtHelper.TimeStampToTime(System.Int64,tdb.common.Enums.EnumAccurateUTC)">
+            <summary>
+            UTC时间戳转为时间
+            </summary>
+            <param name="timeStamp">时间戳</param>
+            <param name="accurate">时间戳精度（默认：秒）</param>
+            <returns>返回一个日期时间</returns>
+        </member>
+        <member name="M:tdb.common.CvtHelper.DayToSecond(System.Decimal)">
+            <summary>
+            天数转秒数
+            </summary>
+            <param name="day">天数</param>
+            <returns></returns>
+        </member>
+        <member name="M:tdb.common.CvtHelper.ToStr``1(``0)">
+            <summary>
+            转字符串
+            （如为null，返回空字符串）
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="T:tdb.common.EmailHelper">
+            <summary>
+            email帮助类
+            </summary>
+        </member>
+        <member name="M:tdb.common.EmailHelper.Send(System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Boolean,System.String,System.String[])">
+            <summary>
+            发送电子邮件
+            </summary>
+            <param name="fromEmail">发件人邮箱</param>
+            <param name="fromEmailName">发件人名称</param>
+            <param name="smtpHost">SMTP服务器地址</param>
+            <param name="smtpPort">SMTP服务器端口</param>
+            <param name="smtpPwd">SMTP密码</param>
+            <param name="subject">标题</param>
+            <param name="body">内容</param>
+            <param name="isBodyHtml">内容是否html</param>
+            <param name="to">收件人地址</param>
+            <param name="attachments">附件完整文件名</param>
+        </member>
+        <member name="M:tdb.common.EmailHelper.Send(System.String,System.String,System.String,System.Int32,System.String,System.String,System.String,System.Boolean,System.Collections.Generic.List{System.String},System.Collections.Generic.List{System.String},System.String[])">
+            <summary>
+            发送电子邮件
+            </summary>
+            <param name="fromEmail">发件人邮箱</param>
+            <param name="fromEmailName">发件人名称</param>
+            <param name="smtpHost">SMTP服务器地址</param>
+            <param name="smtpPort">SMTP服务器端口</param>
+            <param name="smtpPwd">SMTP密码</param>
+            <param name="subject">标题</param>
+            <param name="body">内容</param>
+            <param name="isBodyHtml">内容是否html</param>
+            <param name="lstTo">收件人地址</param>
+            <param name="lstCC">抄送地址</param>
+            <param name="attachments">附件完整文件名</param>
+        </member>
+        <member name="M:tdb.common.EmailHelper.GetSmtpClient(System.String,System.String,System.Int32,System.String)">
+            <summary>
+            SMTP
+            </summary>
+            <param name="fromEmail">发件人邮箱</param>
+            <param name="smtpHost">SMTP服务器地址</param>
+            <param name="smtpPort">SMTP服务器端口</param>
+            <param name="smtpPwd">SMTP密码</param>
+            <returns>SMTP</returns>
+        </member>
+        <member name="T:tdb.common.EmitHelper`1">
+            <summary>
+            emit帮助类
+            </summary>
+        </member>
+        <member name="F:tdb.common.EmitHelper`1.dicObjSetter">
+            <summary>
+            Emit赋值动态方法
+            </summary>
+        </member>
+        <member name="M:tdb.common.EmitHelper`1.EmitSetter(System.String)">
+            <summary>
+            Emit给对象属性赋值
+            </summary>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
+        <member name="F:tdb.common.EmitHelper`1.dicObjGetter">
+            <summary>
+            Emit取值动态方法
+            </summary>
+        </member>
+        <member name="M:tdb.common.EmitHelper`1.EmitGetter(System.String)">
+            <summary>
+            Emit获取对象的属性值
+            </summary>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
+        <member name="F:tdb.common.EmitHelper`1.dicGenericTypeGetter">
+            <summary>
+            Emit取值动态方法
+            </summary>
+        </member>
+        <member name="M:tdb.common.EmitHelper`1.EmitGetter``1(System.String)">
+            <summary>
+            Emit获取对象的属性值
+            </summary>
+            <typeparam name="ReturnT">返回类型</typeparam>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
+        <member name="T:tdb.common.EncryptHelper">
+            <summary>
+            加解密帮助类
+            </summary>
+        </member>
+        <member name="M:tdb.common.EncryptHelper.Md5(System.String)">
+            <summary>
+            MD5　32位加密
+            </summary>
+            <param name="str">需要加密的字符串</param>
+            <returns></returns>
+        </member>
+        <member name="M:tdb.common.EncryptHelper.EncryptAES(System.String)">
+            <summary>  
+            AES加密算法  
+            </summary>  
+            <param name="text">明文字符串</param>  
+            <returns>字符串</returns>  
+        </member>
+        <member name="M:tdb.common.EncryptHelper.DecryptAES(System.String)">
+            <summary>  
+            AES解密  
+            </summary>  
+            <param name="text">密文字节数组</param>  
+            <returns>返回解密后的字符串</returns>  
+        </member>
+        <member name="M:tdb.common.EncryptHelper.HexStringToByteArray(System.String)">
+            <summary>
+            将指定的16进制字符串转换为byte数组
+            </summary>
+            <param name="s">16进制字符串(如：“7F 2C 4A”或“7F2C4A”都可以)</param>
+            <returns>16进制字符串对应的byte数组</returns>
+        </member>
+        <member name="M:tdb.common.EncryptHelper.ByteArrayToHexString(System.Byte[])">
+            <summary>
+            将一个byte数组转换成一个格式化的16进制字符串
+            </summary>
+            <param name="data">byte数组</param>
+            <returns>格式化的16进制字符串</returns>
+        </member>
+        <member name="T:tdb.common.Enums.EnumAccurateUTC">
+            <summary>
+            UTC时间戳精度
+            </summary>
+        </member>
+        <member name="F:tdb.common.Enums.EnumAccurateUTC.Second">
+            <summary>
+            秒
+            </summary>
+        </member>
+        <member name="F:tdb.common.Enums.EnumAccurateUTC.Millisecond">
+            <summary>
+            毫秒
+            </summary>
+        </member>
+    </members>
+</doc>

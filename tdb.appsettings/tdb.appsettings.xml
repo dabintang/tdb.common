@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>tdb.appsettings</name>
+    </assembly>
+    <members>
+        <member name="T:tdb.appsettings.AppsettingsConfigAttribute">
+            <summary>
+            appsettings.json配置特性
+            </summary>
+        </member>
+        <member name="P:tdb.appsettings.AppsettingsConfigAttribute.Key">
+            <summary>
+            appsettings.json配置key
+            </summary>
+        </member>
+        <member name="M:tdb.appsettings.AppsettingsConfigAttribute.#ctor(System.String)">
+            <summary>
+            appsettings.json配置key特性
+            </summary>
+            <param name="key">appsettings.json配置key</param>
+        </member>
+        <member name="T:tdb.appsettings.AppsettingsConfigHelper">
+            <summary>
+            appsettings.json配置帮助类
+            </summary>
+        </member>
+        <member name="M:tdb.appsettings.AppsettingsConfigHelper.GetConfig``1">
+            <summary>
+            获取appsettings.json配置信息
+            </summary>
+            <typeparam name="T">appsettings.json配置信息类型</typeparam>
+            <returns>consul配置信息</returns>
+        </member>
+        <member name="M:tdb.appsettings.AppsettingsConfigHelper.SetConfig(System.Object)">
+            <summary>
+            设置appsettings.json配置信息
+            </summary>
+            <param name="obj">配置信息对象</param>
+        </member>
+    </members>
+</doc>
