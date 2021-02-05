@@ -41,13 +41,14 @@ namespace tdb.consul.kv
             {
                 //特性
                 var attr = pro.GetCustomAttributes<ConsulConfigAttribute>().FirstOrDefault();
-                if (attr == null || dicPair.ContainsKey(attr.Key) == false)
+                var key = $"{prefixKey}{attr.Key}";
+                if (attr == null || dicPair.ContainsKey(key) == false)
                 {
                     continue;
                 }
 
                 //字符串值
-                var strValue = dicPair[attr.Key];
+                var strValue = dicPair[key];
 
                 //如果是字符串类型
                 if (pro.PropertyType == typeof(string))

@@ -28,13 +28,13 @@ namespace tdb.nlog.mysql
         /// 构造函数
         /// </summary>
         /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="servicesCode">服务编码</param>
-        public NLogger(string connectionString, string servicesCode = "") : base()
+        /// <param name="serviceCode">服务编码</param>
+        public NLogger(string connectionString, string serviceCode = "") : base()
         {
             GlobalDiagnosticsContext.Set("dbConnectionString", connectionString);
-            if (string.IsNullOrWhiteSpace(servicesCode) == false)
+            if (string.IsNullOrWhiteSpace(serviceCode) == false)
             {
-                LogManager.Configuration.Variables["servicesCode"] = servicesCode;
+                LogManager.Configuration.Variables["serviceCode"] = serviceCode;
             }
 
             this.logger = NLog.LogManager.GetCurrentClassLogger();

@@ -54,6 +54,9 @@ namespace tdb.nlog
 
         #endregion
 
+        /// <summary>
+        /// 日志
+        /// </summary>
         protected NLog.Logger logger = null;
 
         /// <summary>
@@ -62,6 +65,27 @@ namespace tdb.nlog
         public NLogger()
         {
             this.logger = NLog.LogManager.GetCurrentClassLogger();
+        }
+
+        /// <summary>
+        /// 写日志
+        /// </summary>
+        /// <param name="level">日志级别</param>
+        /// <param name="message">日志内容</param>
+        public void Log(LogLevel level, string message)
+        {
+            logger.Log(level, message);
+        }
+
+        /// <summary>
+        /// 写日志
+        /// </summary>
+        /// <param name="level">日志级别</param>
+        /// <param name="exception">异常</param>
+        /// <param name="message">日志内容</param>
+        public void Log(LogLevel level, Exception exception, string message)
+        {
+            logger.Log(level, exception, message);
         }
 
         /// <summary>

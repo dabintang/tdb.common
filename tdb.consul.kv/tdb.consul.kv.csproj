@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.1.0.1</Version>
+    <Version>2.1.0.3</Version>
     <Authors>tangdabin</Authors>
     <Company>tdb</Company>
     <Description>把consul的key/value作分布式配置</Description>
