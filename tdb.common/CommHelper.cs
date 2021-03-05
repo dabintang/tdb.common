@@ -107,5 +107,29 @@ namespace tdb.common
             var getter = EmitHelper<ObjectT>.EmitGetter<ReturnT>(propertyName);
             return getter(obj);
         }
+
+        /// <summary>
+        /// 对象是否存在某属性
+        /// key1：对象类型；key2：属性名
+        /// </summary>
+        private static Dictionary<string, HashSet<string>> _dicObjProperty = new Dictionary<string, HashSet<string>>();
+        /// <summary>
+        /// 判断对象是否存在某属性
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <param name="propertyName">属性名</param>
+        /// <returns></returns>
+        public static bool IsExistProperty(object obj, string propertyName)
+        {
+            var type = obj.GetType();
+            var typeName = type.FullName;
+            if (_dicObjProperty.ContainsKey(typeName) == false)
+            {
+                _dicObjProperty[typeName] = type.GetProperties().Select(m => m.Name).ToHashSet();
+            }
+
+            var proNames = _dicObjProperty[typeName];
+            return proNames.Contains(propertyName);
+        }
     }
 }

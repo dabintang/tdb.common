@@ -12,8 +12,8 @@
     <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>E:\tdb\github\svn\tdb.common\tdb.consul.services\tdb.consul.services.xml</DocumentationFile>
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

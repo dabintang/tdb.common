@@ -201,5 +201,45 @@ namespace tdb.nlog
         {
             logger.Fatal(ex, msg);
         }
+
+        /// <summary>
+        /// 是否启用指定级别的日志
+        /// </summary>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public virtual bool IsEnabled(LogLevel level)
+        {
+            return logger.IsEnabled(level);
+        }
+
+        /// <summary>
+        /// 是否启用Fatal级别日志
+        /// </summary>
+        public virtual bool IsFatalEnabled { get { return logger.IsFatalEnabled; } }
+
+        /// <summary>
+        /// 是否启用Error级别日志
+        /// </summary>
+        public virtual bool IsErrorEnabled { get { return logger.IsErrorEnabled; } }
+
+        /// <summary>
+        /// 是否启用Warn级别日志
+        /// </summary>
+        public virtual bool IsWarnEnabled { get { return logger.IsWarnEnabled; } }
+
+        /// <summary>
+        /// 是否启用Info级别日志
+        /// </summary>
+        public virtual bool IsInfoEnabled { get { return logger.IsInfoEnabled; } }
+
+        /// <summary>
+        /// 是否启用Debug级别日志
+        /// </summary>
+        public virtual bool IsDebugEnabled { get { return logger.IsDebugEnabled; } }
+
+        /// <summary>
+        /// 是否启用Trace级别日志
+        /// </summary>
+        public virtual bool IsTraceEnabled { get { return logger.IsTraceEnabled; } }
     }
 }
