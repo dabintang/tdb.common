@@ -24,7 +24,9 @@ namespace tdb.common
             // 加密后是一个字节类型的数组，这里要注意编码UTF8/Unicode等的选择　
             byte[] s = md5.ComputeHash(Encoding.UTF8.GetBytes(str));
 
-            return BitConverter.ToString(s);
+            var val = BitConverter.ToString(s);
+            val = val.Replace("-", "");
+            return val;
         }
 
         #endregion

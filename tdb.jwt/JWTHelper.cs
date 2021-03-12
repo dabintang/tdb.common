@@ -17,12 +17,12 @@ namespace tdb.jwt
         /// <summary>
         /// 生成token
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">承载信息类型</typeparam>
         /// <param name="payloadInfo">承载信息</param>
-        /// <param name="timeoutSeconds">超时时间（单位：秒）</param>
         /// <param name="secret">秘钥</param>
+        /// <param name="timeoutSeconds">超时时间（单位：秒）</param>
         /// <returns></returns>
-        public static string Encode<T>(T payloadInfo, int timeoutSeconds, string secret)
+        public static string Encode<T>(T payloadInfo, string secret, int timeoutSeconds)
         {
             IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
             IJsonSerializer serializer = new JsonNetSerializer();
@@ -42,7 +42,7 @@ namespace tdb.jwt
         /// <summary>
         /// 解析并验证token
         /// </summary>
-        /// <typeparam name="T"></typeparam>
+        /// <typeparam name="T">承载信息类型</typeparam>
         /// <param name="token">签名</param>
         /// <param name="secret">秘钥</param>
         /// <returns></returns>

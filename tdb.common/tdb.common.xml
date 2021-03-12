@@ -77,6 +77,20 @@
             <param name="propertyName">属性名</param>
             <returns></returns>
         </member>
+        <member name="F:tdb.common.CommHelper._dicObjProperty">
+            <summary>
+            对象是否存在某属性
+            key1：对象类型；key2：属性名
+            </summary>
+        </member>
+        <member name="M:tdb.common.CommHelper.IsExistProperty(System.Object,System.String)">
+            <summary>
+            判断对象是否存在某属性
+            </summary>
+            <param name="obj">对象</param>
+            <param name="propertyName">属性名</param>
+            <returns></returns>
+        </member>
         <member name="T:tdb.common.CvtHelper">
             <summary>
             转换帮助类

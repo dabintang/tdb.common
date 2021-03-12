@@ -22,7 +22,7 @@ namespace tdb.test.Controllers
         [HttpPost]
         public string CreateToken(JWTUserInfo info)
         {
-            var token = JWTHelper.Encode(info, 30, "12345678901234567890");
+            var token = JWTHelper.Encode(info, "12345678901234567890", 30);
             return token;
         }
 
