@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.1.0.2</Version>
+    <Version>2.1.0.3</Version>
     <Authors>tangdabin</Authors>
     <Company>tdb</Company>
     <Description>csredis简单封装</Description>
@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSRedisCore" Version="3.6.5" />
+    <PackageReference Include="CSRedisCore" Version="3.6.6" />
   </ItemGroup>
 
 </Project>
