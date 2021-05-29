@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.1.0.5</Version>
+    <Version>2.1.0.6</Version>
     <Authors>tangdabin</Authors>
     <Company>tdb</Company>
     <Description>nlog保存到mysql的简单封装</Description>
@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.24" />
+    <PackageReference Include="MySql.Data" Version="8.0.25" />
   </ItemGroup>
 
   <ItemGroup>
