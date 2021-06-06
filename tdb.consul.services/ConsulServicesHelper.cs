@@ -24,7 +24,6 @@ namespace tdb.consul.services
         /// <param name="deregisterCriticalServiceAfter">心跳检测失败多久后注销服务</param>
         /// <param name="interval">间隔多久心跳检测一次</param>
         /// <param name="timeout">心跳检测超时时间</param>
-        /// <param name="config">参数配置</param>
         /// <param name="appLifetime">程序生命周期</param>
         public static void RegisterToConsul(
             string consulIP,
@@ -36,7 +35,6 @@ namespace tdb.consul.services
             TimeSpan? deregisterCriticalServiceAfter,
             TimeSpan? interval,
             TimeSpan? timeout,
-            IConfiguration config, 
             IHostApplicationLifetime appLifetime)
         {
             //Consul地址

@@ -19,7 +19,7 @@ namespace tdb.test.Controllers
     [ApiController]
     public class TestConsulController : ControllerBase
     {
-        const string consulIP = "10.1.49.90";
+        const string consulIP = "127.0.0.1";
         const int consulPort = 8500;
 
         readonly IConfiguration _config;
@@ -50,7 +50,7 @@ namespace tdb.test.Controllers
         public IActionResult RegisterToConsul()
         {
             ConsulServicesHelper.RegisterToConsul(consulIP, consulPort, "10.1.49.45", 5000, "TestServiceName", "http://10.1.49.45:5000/api/Consul/HealthCheck",
-                TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), _config, _appLifetime);
+                TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), _appLifetime);
 
             return Ok();
         }
@@ -150,16 +150,42 @@ namespace tdb.test.Controllers
     public class ConsulConfig
     {
         /// <summary>
-        /// mysql日志数据库连接字符串
+        /// 是否已设置consul配置
         /// </summary>
-        [ConsulConfig("MySqlLogConnStr")]
-        public string MySqlLogConnStr { get; set; }
+        public bool HadConsulConfig()
+        {
+            return !string.IsNullOrEmpty(DBLogConnStr);
+        }
+
+        /// <summary>
+        /// 数据库连接字符串
+        /// </summary>
+        [ConsulConfig("DBConnStr")]
+        public string DBConnStr { get; set; }
+
+        /// <summary>
+        /// 日志数据库连接字符串
+        /// </summary>
+        [ConsulConfig("DBLogConnStr")]
+        public string DBLogConnStr { get; set; }
 
         /// <summary>
         /// redis配置
         /// </summary>
         [ConsulConfig("Redis")]
         public RedisConfig Redis { get; set; }
+
+        /// <summary>
+        /// 认证相关配置
+        /// </summary>
+        [ConsulConfig("Token")]
+        public TokenConfig Token { get; set; }
+
+        /// <summary>
+        /// 默认密码
+        /// </summary>
+        [ConsulConfig("DefaultPassword")]
+        public string DefaultPassword { get; set; }
 
         #region 内部类
 
@@ -172,6 +198,32 @@ namespace tdb.test.Controllers
             /// 连接字符串
             /// </summary>
             public List<string> ConnectString { get; set; }
+        }
+
+        /// <summary>
+        /// 认证相关配置
+        /// </summary>
+        public class TokenConfig
+        {
+            /// <summary>
+            /// 发行者
+            /// </summary>
+            public string Issuer { get; set; }
+
+            /// <summary>
+            /// 接收者
+            /// </summary>
+            public string Audience { get; set; }
+
+            /// <summary>
+            /// 秘钥（至少16位）
+            /// </summary>
+            public string SecretKey { get; set; }
+
+            /// <summary>
+            /// 超时时间（秒）
+            /// </summary>
+            public int TimeoutSeconds { get; set; }
         }
 
         #endregion
