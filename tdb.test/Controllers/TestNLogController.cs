@@ -34,7 +34,7 @@ namespace tdb.test.Controllers
         public void WriteDBLog()
         {
             var logger = new tdb.nlog.mysql.NLogger(
-                "Server=10.1.49.45;Port=3306;Database=tdb.logs;Uid=root;Password=123456;Charset=utf8;Pooling=True;Allow User Variables=True;SslMode=none;",
+                "Server=127.0.0.1;Port=3306;Database=tdb.logs;Uid=root;Password=123456;Charset=utf8;Pooling=True;Allow User Variables=True;SslMode=none;",
                 "TestAPI");
 
             logger.Trace("NLogger.Ins.Trace");

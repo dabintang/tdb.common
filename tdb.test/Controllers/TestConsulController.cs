@@ -49,7 +49,7 @@ namespace tdb.test.Controllers
         [HttpPost]
         public IActionResult RegisterToConsul()
         {
-            ConsulServicesHelper.RegisterToConsul(consulIP, consulPort, "10.1.49.45", 5000, "TestServiceName", "http://10.1.49.45:5000/api/Consul/HealthCheck",
+            ConsulServicesHelper.RegisterToConsul(consulIP, consulPort, "127.0.0.1", 5000, "TestServiceName", "http://127.0.0.1:5000/api/Consul/HealthCheck",
                 TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), _appLifetime);
 
             return Ok();
