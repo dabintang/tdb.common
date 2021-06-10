@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <None Include="NLog.config">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
@@ -27,6 +27,12 @@
     <ProjectReference Include="..\tdb.jwt\tdb.jwt.csproj" />
     <ProjectReference Include="..\tdb.nlog.mysql\tdb.nlog.mysql.csproj" />
     <ProjectReference Include="..\tdb.nlog\tdb.nlog.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>
