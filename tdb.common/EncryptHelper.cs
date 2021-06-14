@@ -98,7 +98,7 @@ namespace tdb.common
         /// </summary>
         /// <param name="s">16进制字符串(如：“7F 2C 4A”或“7F2C4A”都可以)</param>
         /// <returns>16进制字符串对应的byte数组</returns>
-        public static byte[] HexStringToByteArray(string s)
+        private static byte[] HexStringToByteArray(string s)
         {
             s = s.Replace(" ", "");
             byte[] buffer = new byte[s.Length / 2];
@@ -112,7 +112,7 @@ namespace tdb.common
         /// </summary>
         /// <param name="data">byte数组</param>
         /// <returns>格式化的16进制字符串</returns>
-        public static string ByteArrayToHexString(byte[] data)
+        private static string ByteArrayToHexString(byte[] data)
         {
             StringBuilder sb = new StringBuilder(data.Length * 3);
             foreach (byte b in data)
