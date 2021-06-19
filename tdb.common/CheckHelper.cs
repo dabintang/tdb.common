@@ -31,5 +31,16 @@ namespace tdb.common
                     || dataType == typeof(float)
                    );
         }
+
+        /// <summary>
+        /// 是否可空类型
+        /// </summary>
+        /// <param name="dataType"></param>
+        /// <returns></returns>
+        public static bool IsNullableType(Type dataType)
+        {
+            return (dataType.IsClass || dataType.IsInterface ||
+                (dataType.IsGenericType && dataType.GetGenericTypeDefinition().Equals(typeof(Nullable<>))));
+        }
     }
 }
