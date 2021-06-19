@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Primitives;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace tdb.appsettings
         static AppsettingsConfigHelper()
         {
             //监听配置改动
-            var _callbackRegistration = configuration.GetReloadToken().RegisterChangeCallback(OnConfigReload, configuration);
+            ChangeToken.OnChange(() => configuration.GetReloadToken(), OnConfigReload, configuration);
         }
 
         #region 获取配置信息

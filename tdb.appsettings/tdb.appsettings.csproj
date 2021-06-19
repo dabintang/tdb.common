@@ -6,7 +6,7 @@
     <Company>tdb</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>appsettings.json配置获取帮助类</Description>
-    <Version>2.1.0.3</Version>
+    <Version>2.1.0.4</Version>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>tdb</PackageTags>
     <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
