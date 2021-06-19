@@ -33,21 +33,20 @@ namespace tdb.common
 
         #region AES
 
-        private const string _AES_IV = "tangdabinjiushiw";//16位
-        private const string _AES_KEY = "wodemingzijiaozuotangdabintangdb";//32位
-
         /// <summary>  
-        /// AES加密算法  
+        /// AES加密
         /// </summary>  
-        /// <param name="text">明文字符串</param>  
-        /// <returns>字符串</returns>  
-        public static string EncryptAES(string text)
+        /// <param name="key">秘钥</param>
+        /// <param name="iv">向量</param>
+        /// <param name="text">明文字符串</param>
+        /// <returns>加密后字符串</returns>
+        public static string EncryptAES(string key, string iv, string text)
         {
-            byte[] keyBytes = Encoding.UTF8.GetBytes(_AES_KEY);
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
                 aesAlg.Key = keyBytes;
-                aesAlg.IV = Encoding.UTF8.GetBytes(_AES_IV);
+                aesAlg.IV = Encoding.UTF8.GetBytes(iv);
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);
                 using (MemoryStream msEncrypt = new MemoryStream())
@@ -68,16 +67,18 @@ namespace tdb.common
         /// <summary>  
         /// AES解密  
         /// </summary>  
+        /// <param name="key">秘钥</param>
+        /// <param name="iv">向量</param>
         /// <param name="text">密文字节数组</param>  
         /// <returns>返回解密后的字符串</returns>  
-        public static string DecryptAES(string text)
+        public static string DecryptAES(string key, string iv, string text)
         {
             byte[] inputBytes = HexStringToByteArray(text);
-            byte[] keyBytes = Encoding.UTF8.GetBytes(_AES_KEY);
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
             using (AesCryptoServiceProvider aesAlg = new AesCryptoServiceProvider())
             {
                 aesAlg.Key = keyBytes;
-                aesAlg.IV = Encoding.UTF8.GetBytes(_AES_IV);
+                aesAlg.IV = Encoding.UTF8.GetBytes(iv);
 
                 ICryptoTransform decryptor = aesAlg.CreateDecryptor(aesAlg.Key, aesAlg.IV);
                 using (MemoryStream msEncrypt = new MemoryStream(inputBytes))

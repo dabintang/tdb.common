@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using tdb.common;
 
 namespace tdb.test.Controllers
 {
@@ -30,6 +31,46 @@ namespace tdb.test.Controllers
             await Task.Delay(sleepSec * 1000);
 
             Console.WriteLine($"输入：{sleepSec}");
+        }
+
+        /// <summary>
+        /// AES加密
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public string EncryptAES(string key, string iv, string text)
+        {
+            try
+            {
+                return EncryptHelper.EncryptAES(key, iv, text);
+            }
+            catch
+            {
+                return "加密失败";
+            }
+        }
+
+        /// <summary>
+        /// AES解密
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="iv"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public string DecryptAES(string key, string iv, string text)
+        {
+            try
+            {
+                return EncryptHelper.DecryptAES(key, iv, text);
+            }
+            catch
+            {
+                return "解密失败";
+            }
         }
     }
 }
