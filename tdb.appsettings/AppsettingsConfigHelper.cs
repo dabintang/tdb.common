@@ -12,14 +12,28 @@ namespace tdb.appsettings
     /// <summary>
     /// appsettings.json配置帮助类
     /// </summary>
-    public class AppsettingsConfigHelper
+    public static class AppsettingsConfigHelper
     {
+        /// <summary>
+        /// 配置
+        /// </summary>
         private static IConfigurationRoot configuration = new ConfigurationBuilder().AddJsonFile(cfg =>
         {
             cfg.Path = "appsettings.json";
             cfg.ReloadOnChange = true;
             cfg.Optional = false;
         }).Build();
+
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        static AppsettingsConfigHelper()
+        {
+            //监听配置改动
+            var _callbackRegistration = configuration.GetReloadToken().RegisterChangeCallback(OnConfigReload, configuration);
+        }
+
+        #region 获取配置信息
 
         /// <summary>
         /// 获取appsettings.json配置信息
@@ -92,5 +106,34 @@ namespace tdb.appsettings
                 }
             }
         }
+
+        #endregion
+
+        #region 监听配置改动
+
+        /// <summary>
+        /// 配置重新加载委托
+        /// </summary>
+        /// <param name="config"></param>
+        public delegate void _ConfigReload(IConfigurationRoot config);
+
+        /// <summary>
+        /// 配置重新加载事件
+        /// </summary>
+        public static event _ConfigReload ConfigReload;
+
+        /// <summary>
+        /// 配置重新加载时触发
+        /// </summary>
+        /// <param name="config">配置</param>
+        private static void OnConfigReload(object config)
+        {
+            if(ConfigReload != null)
+            {
+                ConfigReload(config as IConfigurationRoot);
+            }
+        }
+
+        #endregion
     }
 }
