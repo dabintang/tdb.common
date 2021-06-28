@@ -39,6 +39,7 @@ namespace tdb.common
                         .Select(p => p.GetIPProperties())
                         .SelectMany(p => p.UnicastAddresses)
                         .Where(p => p.Address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(p.Address))
+                        .OrderByDescending(p => p.DuplicateAddressDetectionState)
                         .FirstOrDefault()?.Address.ToString();
             return ip;
         }

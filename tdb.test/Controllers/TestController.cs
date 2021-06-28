@@ -72,5 +72,14 @@ namespace tdb.test.Controllers
                 return "解密失败";
             }
         }
+
+        /// <summary>
+        /// 获取本地IP
+        /// </summary>
+        [HttpGet]
+        public string GetLocalIP()
+        {
+            return CommHelper.GetLocalIP();
+        }
     }
 }
