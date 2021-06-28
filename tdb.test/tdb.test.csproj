@@ -6,16 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="NLog.config" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="NLog.config">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
   </ItemGroup>
 
