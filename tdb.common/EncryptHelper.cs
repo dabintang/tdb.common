@@ -36,8 +36,8 @@ namespace tdb.common
         /// <summary>  
         /// AES加密
         /// </summary>  
-        /// <param name="key">秘钥</param>
-        /// <param name="iv">向量</param>
+        /// <param name="key">秘钥（支持长度：16、24、32）</param>
+        /// <param name="iv">向量（支持长度：16）</param>
         /// <param name="text">明文字符串</param>
         /// <returns>加密后字符串</returns>
         public static string EncryptAES(string key, string iv, string text)
@@ -67,8 +67,8 @@ namespace tdb.common
         /// <summary>  
         /// AES解密  
         /// </summary>  
-        /// <param name="key">秘钥</param>
-        /// <param name="iv">向量</param>
+        /// <param name="key">秘钥（支持长度：16、24、32）</param>
+        /// <param name="iv">向量（支持长度：16）</param>
         /// <param name="text">密文字节数组</param>  
         /// <returns>返回解密后的字符串</returns>  
         public static string DecryptAES(string key, string iv, string text)
