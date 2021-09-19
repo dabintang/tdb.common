@@ -4,7 +4,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace tdb.common
+namespace tdb.common.Crypto
 {
     /// <summary>
     /// 加解密帮助类
@@ -124,6 +124,51 @@ namespace tdb.common
                 //sb.Append(Convert.ToString(b, 16).PadLeft(2, '0').PadRight(3, ' '));
             }
             return sb.ToString().ToUpper();
+        }
+
+        #endregion
+
+        #region RSA
+
+        /// <summary>
+        /// 创建RAS秘钥（PKCS#8格式秘钥）
+        /// </summary>
+        /// <param name="size">密钥长度,默认1024,可以为2048</param>
+        /// <returns></returns>
+        public static RSAKey CreateRSAKeyPkcs8(int size = 1024)
+        {
+            //导出PEM PKCS#8格式密钥对，返回数组第一个是私钥,第二个是公钥.
+            var keys = RSACryptoHelper.CreateKey_PEM_PKCS8(size);
+
+            var rsaKey = new RSAKey()
+            {
+                PrivateKey = keys[0],
+                PublicKey = keys[1]
+            };
+
+            return rsaKey;
+        }
+
+        /// <summary>
+        /// RAS加密（PKCS#8格式秘钥）
+        /// </summary>
+        /// <param name="plaintext">明文</param>
+        /// <param name="publicKey">PKCS#8格式公钥</param>
+        /// <returns></returns>
+        public static string EncryptRSAPkcs8(string plaintext, string publicKey)
+        {
+            return RSACryptoHelper.Encrypt_PEMKey(plaintext, publicKey);
+        }
+
+        /// <summary>
+        /// RAS解密（PKCS#8格式秘钥）
+        /// </summary>
+        /// <param name="ciphertext">密文</param>
+        /// <param name="privateKey">PKCS#8格式私钥</param>
+        /// <returns></returns>
+        public static string DecryptRSAPkcs8(string ciphertext, string privateKey)
+        {
+            return RSACryptoHelper.Decrypt_PEMKey(ciphertext, privateKey);
         }
 
         #endregion

@@ -12,7 +12,7 @@ namespace tdb.consul.services
     /// </summary>
     public class ConsulServicesHelper
     {
-        // <summary>
+        /// <summary>
         /// 把服务注册到Consul
         /// </summary>
         /// <param name="consulIP">consul服务IP</param>
