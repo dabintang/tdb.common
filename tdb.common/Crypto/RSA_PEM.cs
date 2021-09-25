@@ -23,9 +23,10 @@ namespace tdb.common.Crypto
 		/// <returns></returns>
 		public static RSACryptoServiceProvider FromPEM(string pemKey)
 		{
-			var rsaParams = new CspParameters();
-			rsaParams.Flags = CspProviderFlags.UseMachineKeyStore;
-			var rsa = new RSACryptoServiceProvider(rsaParams);
+			//var rsaParams = new CspParameters();
+			//rsaParams.Flags = CspProviderFlags.UseMachineKeyStore;
+			//var rsa = new RSACryptoServiceProvider(rsaParams);
+			var rsa = new RSACryptoServiceProvider();
 
 			var param = new RSAParameters();
 
