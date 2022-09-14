@@ -19,7 +19,8 @@ namespace tdb.nlog.mysql
         /// <summary>
         /// 构造函数
         /// </summary>
-        public NLogger() : base()
+        /// <param name="configFile">配置文件</param>
+        public NLogger(string configFile = "") : base(configFile)
         {
 
         }
@@ -30,7 +31,8 @@ namespace tdb.nlog.mysql
         /// <param name="connectionString">数据库连接字符串</param>
         /// <param name="serviceCode">服务编码</param>
         /// <param name="serviceAddress">服务地址</param>
-        public NLogger(string connectionString, string serviceCode = "", string serviceAddress = "") : base()
+        /// <param name="logConfigFile">日志配置文件</param>
+        public NLogger(string connectionString, string serviceCode = "", string serviceAddress = "", string logConfigFile = "") : base(logConfigFile)
         {
             GlobalDiagnosticsContext.Set("dbConnectionString", connectionString);
             if (string.IsNullOrWhiteSpace(serviceCode) == false)

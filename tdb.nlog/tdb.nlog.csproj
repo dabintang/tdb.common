@@ -2,12 +2,12 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.1.1.1</Version>
+    <Version>2.1.1.2</Version>
     <Authors>tangdabin</Authors>
     <Product>tdb</Product>
     <Company>tdb</Company>
     <Description>简单封装nlog操作</Description>
-    <PackageReleaseNotes>升级组件</PackageReleaseNotes>
+    <PackageReleaseNotes>日志构造函数添加配置文件名参赛</PackageReleaseNotes>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>tdb</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.0.0" />
+    <PackageReference Include="NLog" Version="5.0.4" />
   </ItemGroup>
 
   <ItemGroup>

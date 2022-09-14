@@ -59,12 +59,21 @@ namespace tdb.nlog
         /// </summary>
         protected NLog.Logger logger = null;
 
+        ///// <summary>
+        ///// 构造函数
+        ///// </summary>
+        //public NLogger()
+        //{
+        //    this.logger = LogManager.GetCurrentClassLogger();
+        //}
+
         /// <summary>
         /// 构造函数
         /// </summary>
-        public NLogger()
+        /// <param name="configFile">配置文件</param>
+        public NLogger(string configFile = "")
         {
-            this.logger = NLog.LogManager.GetCurrentClassLogger();
+            this.logger = LogManager.LoadConfiguration(configFile).GetCurrentClassLogger();
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace tdb.test.Controllers
         [HttpGet]
         public void WriteFileLog()
         {
-            var logger = new tdb.nlog.NLogger();
+            var logger = new tdb.nlog.NLogger(@"Configs\nlog2.config");
 
             logger.Trace("NLogger.Ins.Trace");
             logger.Debug("NLogger.Ins.Debug");
