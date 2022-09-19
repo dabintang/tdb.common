@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using tdb.common;
 using tdb.consul.kv;
@@ -64,7 +64,7 @@ namespace tdb.test.Controllers
         public string FindServices(string serviceName)
         {
             var lstService = ConsulServicesHelper.FindServices(consulIP, consulPort, serviceName);
-            var jsonStr = JsonConvert.SerializeObject(lstService);
+            var jsonStr = JsonSerializer.Serialize(lstService);
 
             return jsonStr;
         }
@@ -94,7 +94,7 @@ namespace tdb.test.Controllers
         public string BackupConfig(string consulIP, int consulPort, string prefixKey)
         {
             var config = ConsulConfigHelper.GetConfig<ConsulConfig>(consulIP, consulPort, prefixKey);
-            var jsonStr = JsonConvert.SerializeObject(config);
+            var jsonStr = JsonSerializer.Serialize(config);
 
             var fullFileName = CommHelper.GetFullFileName($"backup\\kv\\config_{DateTime.Now.ToString("yyyyMMddHHmmss")}.json");
             var path = Path.GetDirectoryName(fullFileName);
@@ -125,7 +125,7 @@ namespace tdb.test.Controllers
                 stream.Read(bytes, 0, bytes.Length);
 
                 var json = Encoding.Default.GetString(bytes);
-                var config = JsonConvert.DeserializeObject<ConsulConfig>(json);
+                var config = JsonSerializer.Deserialize<ConsulConfig>(json);
                 return ConsulConfigHelper.PutConfig(consulIP, consulPort, config, prefixKey);
             }
         }

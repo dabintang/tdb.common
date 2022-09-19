@@ -1,10 +1,10 @@
 ﻿using Consul;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using tdb.common;
 
@@ -256,7 +256,7 @@ namespace tdb.consul.kv
             }
             else
             {
-                strValue = JsonConvert.SerializeObject(value, Formatting.Indented);
+                strValue = JsonSerializer.Serialize(value, new JsonSerializerOptions() { WriteIndented = true });
             }
 
             return Encoding.UTF8.GetBytes(strValue);

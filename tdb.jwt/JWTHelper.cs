@@ -1,10 +1,10 @@
 ﻿using JWT;
 using JWT.Algorithms;
 using JWT.Serializers;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
 using tdb.common;
 
 namespace tdb.jwt
@@ -56,7 +56,7 @@ namespace tdb.jwt
             IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder, algorithm);
 
             var json = decoder.Decode(token, secret, true);
-            var result = JsonConvert.DeserializeObject<T>(json);
+            var result = JsonSerializer.Deserialize<T>(json);
 
             return result;
         }

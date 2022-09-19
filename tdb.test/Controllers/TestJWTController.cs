@@ -1,10 +1,10 @@
 ﻿using JWT.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 using tdb.jwt;
 
@@ -37,7 +37,7 @@ namespace tdb.test.Controllers
             try
             {
                 var user = JWTHelper.Decode<JWTUserInfo>(token, "12345678901234567890");
-                var result = JsonConvert.SerializeObject(user);
+                var result = JsonSerializer.Serialize(user);
                 return result;
             }
             catch (TokenExpiredException)

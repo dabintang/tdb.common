@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using tdb.common;
 
 namespace tdb.consul.kv
@@ -63,7 +63,7 @@ namespace tdb.consul.kv
                 }
                 else
                 {
-                    var value = JsonConvert.DeserializeObject(strValue, pro.PropertyType);
+                    var value = JsonSerializer.Deserialize(strValue, pro.PropertyType);
                     CommHelper.EmitSet(obj, pro.Name, value);
                 }
             }

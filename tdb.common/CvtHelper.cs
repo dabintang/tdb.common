@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using tdb.common.Enums;
 
 namespace tdb.common
@@ -118,8 +118,8 @@ namespace tdb.common
         /// <returns></returns>
         public static T DeepClone<T>(T value)
         {
-            var json = JsonConvert.SerializeObject(value);
-            return JsonConvert.DeserializeObject<T>(json);
+            var jsonStr = JsonSerializer.Serialize(value);
+            return JsonSerializer.Deserialize<T>(jsonStr);
         }
     }
 }
