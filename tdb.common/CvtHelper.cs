@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using tdb.common.Enums;
 
@@ -10,7 +11,7 @@ namespace tdb.common
     /// <summary>
     /// 转换帮助类
     /// </summary>
-    public class CvtHelper
+    public static class CvtHelper
     {
         /// <summary>
         /// 对象转换为字典
@@ -18,7 +19,7 @@ namespace tdb.common
         /// <param name="obj">待转化的对象</param>
         /// <param name="isIgnoreNull">是否忽略NULL</param>
         /// <returns></returns>
-        public static Dictionary<string, object> ToDictionary(object obj, bool isIgnoreNull)
+        public static Dictionary<string, object> ToDictionary(this object obj, bool isIgnoreNull = false)
         {
             Dictionary<string, object> map = new Dictionary<string, object>();
 
@@ -49,7 +50,7 @@ namespace tdb.common
         /// <param name="clientTime">本地时间</param>
         /// <param name="accurate">时间戳精度（默认：秒）</param>
         /// <returns></returns>
-        public static long ToTimeStamp(DateTime clientTime, EnumAccurateUTC accurate = EnumAccurateUTC.Second)
+        public static long ToTimeStamp(this DateTime clientTime, EnumAccurateUTC accurate = EnumAccurateUTC.Second)
         {
             var startTime = TimeZoneInfo.ConvertTimeFromUtc(new System.DateTime(1970, 1, 1, 0, 0, 0, 0), TimeZoneInfo.Local);
             switch (accurate)
@@ -69,7 +70,7 @@ namespace tdb.common
         /// <param name="timeStamp">时间戳</param>
         /// <param name="accurate">时间戳精度（默认：秒）</param>
         /// <returns>返回一个日期时间</returns>
-        public static DateTime TimeStampToTime(long timeStamp, EnumAccurateUTC accurate = EnumAccurateUTC.Second)
+        public static DateTime TimeStampToTime(this long timeStamp, EnumAccurateUTC accurate = EnumAccurateUTC.Second)
         {
             var startTime = TimeZoneInfo.ConvertTimeFromUtc(new System.DateTime(1970, 1, 1, 0, 0, 0, 0), TimeZoneInfo.Local);
             switch (accurate)
@@ -88,7 +89,7 @@ namespace tdb.common
         /// </summary>
         /// <param name="day">天数</param>
         /// <returns></returns>
-        public static long DayToSecond(decimal day)
+        public static long DayToSecond(this decimal day)
         {
             return Convert.ToInt64(day * 86400);
         }
@@ -100,7 +101,7 @@ namespace tdb.common
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string ToStr<T>(T value)
+        public static string ToStr<T>(this T value)
         {
             if (value == null)
             {
@@ -116,10 +117,66 @@ namespace tdb.common
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T DeepClone<T>(T value)
+        public static T DeepClone<T>(this T value)
         {
-            var jsonStr = JsonSerializer.Serialize(value);
-            return JsonSerializer.Deserialize<T>(jsonStr);
+            var jsonStr = JsonSerializer.Serialize(value, new JsonSerializerOptions() { IncludeFields = true });
+            return JsonSerializer.Deserialize<T>(jsonStr, new JsonSerializerOptions() { IncludeFields = true });
+        }
+
+        /// <summary>
+        /// 默认配置
+        /// </summary>
+        public static JsonSerializerOptions DefaultOptions = new JsonSerializerOptions()
+        {
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, //编码：汉子、HTML代码等原样序列化
+            IncludeFields = true, //包含变量字段
+            PropertyNameCaseInsensitive = true, //属性名不区分大小写
+            PropertyNamingPolicy = null, //属性名原样输出（不改变大小写）
+        };
+
+        /// <summary>
+        /// 序列化为json字符串
+        /// </summary>
+        /// <typeparam name="TValue">要序列化的值的类型</typeparam>
+        /// <param name="value">需要序列号的值</param>
+        /// <param name="options">用于控制序列化行为的选项</param>
+        /// <returns>josn字符串</returns>
+        public static string SerializeJson<TValue>(this TValue value, JsonSerializerOptions options = null)
+        {
+            //如果未指定序列化选项，使用默认序列化选项
+            options = options ?? DefaultOptions;
+
+            return JsonSerializer.Serialize(value, options);
+        }
+
+        /// <summary>
+        /// json字符串反序列化为对象
+        /// </summary>
+        /// <typeparam name="TValue">反序列化目标类型</typeparam>
+        /// <param name="json">json字符串</param>
+        /// <param name="options">用于控制反序列化行为的选项</param>
+        /// <returns>目标对象</returns>
+        public static TValue DeserializeJson<TValue>(this string json, JsonSerializerOptions? options = null)
+        {
+            //如果未指定序列化选项，使用默认序列化选项
+            options = options ?? DefaultOptions;
+
+            return JsonSerializer.Deserialize<TValue>(json, options);
+        }
+
+        /// <summary>
+        /// json字符串反序列化为对象
+        /// </summary>
+        /// <param name="json">json字符串</param>
+        /// <param name="returnType">反序列化目标类型</param>
+        /// <param name="options">用于控制反序列化行为的选项</param>
+        /// <returns>目标对象</returns>
+        public static object DeserializeJson(this string json, Type returnType, JsonSerializerOptions options = null)
+        {
+            //如果未指定序列化选项，使用默认序列化选项
+            options = options ?? DefaultOptions;
+
+            return JsonSerializer.Deserialize(json, returnType, options);
         }
     }
 }

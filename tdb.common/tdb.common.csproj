@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <Version>2.1.1.2</Version>
+    <Version>2.1.1.3</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Authors>tangdabin</Authors>
     <Product>tdb.common</Product>
     <Description>通用类库</Description>
-    <PackageReleaseNotes>替换json序列化工具：Newtonsoft.Json -&gt; System.Text.Json</PackageReleaseNotes>
+    <PackageReleaseNotes>添加转换通用方法：对象和json字符串互转</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Company>tdb</Company>
     <PackageTags>tdb</PackageTags>
