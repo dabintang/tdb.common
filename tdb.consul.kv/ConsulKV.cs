@@ -18,7 +18,7 @@ namespace tdb.consul.kv
         /// <summary>
         /// consul
         /// </summary>
-        private ConsulClient consulClient;
+        private readonly ConsulClient consulClient;
 
         /// <summary>
         /// key前缀，一般用来区分不同服务
@@ -34,7 +34,7 @@ namespace tdb.consul.kv
         public ConsulKV(string consulIP, int consulPort, string prefixKey)
         {
             this.consulClient = new ConsulClient(p => { p.Address = new Uri($"http://{consulIP}:{consulPort}"); });
-            this.prefixKey = CvtHelper.ToStr(prefixKey);
+            this.prefixKey = prefixKey.ToStr();
         }
 
         /// <summary>
@@ -42,12 +42,12 @@ namespace tdb.consul.kv
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public string Get(string key)
+        public async Task<string> GetAsync(string key)
         {
             //拼接成完整的key
             var fullKey = this.FullKey(key);
 
-            var pair = this.consulClient.KV.Get(fullKey).Result.Response;
+            var pair = (await this.consulClient.KV.Get(fullKey)).Response;
             var value = Encoding.UTF8.GetString(pair.Value);
             return value;
         }
@@ -56,10 +56,10 @@ namespace tdb.consul.kv
         /// 获取所有key/value
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, string> List()
+        public async Task<Dictionary<string, string>> ListAsync()
         {
             //获取所有key/value
-            var pairs = this.consulClient.KV.List(this.prefixKey).Result.Response;
+            var pairs = (await this.consulClient.KV.List(this.prefixKey)).Response;
             if (pairs == null || pairs.Length == 0)
             {
                 return new Dictionary<string, string>();
@@ -74,26 +74,12 @@ namespace tdb.consul.kv
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task<WriteResult<bool>> DeleteAsync(string key)
+        public async Task<bool> DeleteAsync(string key)
         {
             //拼接成完整的key
             var fullKey = this.FullKey(key);
 
-            return await this.consulClient.KV.Delete(fullKey);
-        }
-
-        /// <summary>
-        /// 删除指定key
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public bool Delete(string key)
-        {
-            //拼接成完整的key
-            var fullKey = this.FullKey(key);
-
-            var result = this.consulClient.KV.Delete(fullKey).Result.Response;
-            return result;
+            return (await this.consulClient.KV.Delete(fullKey)).Response;
         }
 
         /// <summary>
@@ -101,26 +87,12 @@ namespace tdb.consul.kv
         /// </summary>
         /// <param name="prefix">key前缀</param>
         /// <returns></returns>
-        public async Task<WriteResult<bool>> DeleteTreeAsync(string prefix)
+        public async Task<bool> DeleteTreeAsync(string prefix)
         {
             //拼接成完整的key前缀
             var fullKeyPrefix = this.FullKey(prefix);
 
-            return await this.consulClient.KV.DeleteTree(fullKeyPrefix);
-        }
-
-        /// <summary>
-        /// 删除指定前缀的所有key
-        /// </summary>
-        /// <param name="prefix">key前缀</param>
-        /// <returns></returns>
-        public bool DeleteTree(string prefix)
-        {
-            //拼接成完整的key前缀
-            var fullKeyPrefix = this.FullKey(prefix);
-
-            var result = this.consulClient.KV.DeleteTree(fullKeyPrefix).Result.Response;
-            return result;
+            return (await this.consulClient.KV.DeleteTree(fullKeyPrefix)).Response;
         }
 
         /// <summary>
@@ -130,40 +102,18 @@ namespace tdb.consul.kv
         /// <param name="key">key</param>
         /// <param name="value">值</param>
         /// <returns></returns>
-        public async Task<WriteResult<bool>> PutAsync<T>(string key, T value)
+        public async Task<bool> PutAsync<T>(string key, T? value)
         {
             //拼接成完整的key
             var fullKey = this.FullKey(key);
 
             //保存
-            KVPair pair = new KVPair(fullKey)
+            KVPair pair = new(fullKey)
             {
                 Value = this.ToBytes(value)
             };
 
-            return await this.consulClient.KV.Put(pair);
-        }
-
-        /// <summary>
-        /// 写入单个值
-        /// </summary>
-        /// <typeparam name="T">值类型</typeparam>
-        /// <param name="key">key</param>
-        /// <param name="value">值</param>
-        /// <returns></returns>
-        public bool Put<T>(string key, T value)
-        {
-            //拼接成完整的key
-            var fullKey = this.FullKey(key);
-
-            //保存
-            KVPair pair = new KVPair(fullKey)
-            {
-                Value = this.ToBytes(value)
-            };
-
-            var result = this.consulClient.KV.Put(pair).Result.Response;
-            return result;
+            return (await this.consulClient.KV.Put(pair)).Response;
         }
 
         /// <summary>
@@ -171,7 +121,7 @@ namespace tdb.consul.kv
         /// </summary>
         /// <param name="dicKV">key/value</param>
         /// <returns></returns>
-        public async Task<WriteResult<KVTxnResponse>> PutAllAsync(Dictionary<string, object> dicKV)
+        public async Task<bool> PutAllAsync(Dictionary<string, object?> dicKV)
         {
             var lstTxnOp = new List<KVTxnOp>();
             foreach (var kv in dicKV)
@@ -187,32 +137,8 @@ namespace tdb.consul.kv
                 lstTxnOp.Add(txnOp);
             }
 
-            return await this.consulClient.KV.Txn(lstTxnOp);
-        }
-
-        /// <summary>
-        /// 写入多个值
-        /// </summary>
-        /// <param name="dicKV">key/value</param>
-        /// <returns></returns>
-        public bool PutAll(Dictionary<string, object> dicKV)
-        {
-            var lstTxnOp = new List<KVTxnOp>();
-            foreach (var kv in dicKV)
-            {
-                //拼接成完整的key
-                var fullKey = this.FullKey(kv.Key);
-
-                var txnOp = new KVTxnOp(fullKey, KVTxnVerb.Set)
-                {
-                    Value = this.ToBytes(kv.Value)
-                };
-
-                lstTxnOp.Add(txnOp);
-            }
-
-            var result = this.consulClient.KV.Txn(lstTxnOp).Result.Response.Success;
-            return result;
+            var res = (await this.consulClient.KV.Txn(lstTxnOp)).Response;
+            return res.Success;
         }
 
         /// <summary>
@@ -223,6 +149,7 @@ namespace tdb.consul.kv
             if (this.consulClient != null)
             {
                 this.consulClient.Dispose();
+                GC.SuppressFinalize(this);
             }
         }
 
@@ -236,27 +163,50 @@ namespace tdb.consul.kv
             return $"{prefixKey}{key}";
         }
 
+        private JsonSerializerOptions? _jsonSerializerOptions;
+        /// <summary>
+        /// json序列化设置
+        /// </summary>
+        private JsonSerializerOptions JsonSerializerOptions
+        {
+            get
+            {
+                if (this._jsonSerializerOptions == null)
+                {
+                    this._jsonSerializerOptions = new JsonSerializerOptions(CvtHelper.DefaultOptions);
+                    //写入缩进
+                    this._jsonSerializerOptions.WriteIndented = true;
+                }
+                return this._jsonSerializerOptions;
+            }
+        }
+
         /// <summary>
         /// 把值转成字节数组
         /// </summary>
         /// <typeparam name="T">值类型</typeparam>
         /// <param name="value">值</param>
         /// <returns></returns>
-        private byte[] ToBytes<T>(T value)
+        private byte[] ToBytes<T>(T? value)
         {
+            if (value == null)
+            {
+                return Encoding.UTF8.GetBytes(string.Empty);
+            }
+
             //转字符串值
-            string strValue = "";
+            string strValue;
             if (value is DateTime)
             {
-                strValue = Convert.ToDateTime(value).ToString("yyyy/MM/dd HH:mm:ss.fff");
+                strValue = Convert.ToDateTime(value).ToString("yyyy/MM/dd HH:mm:ss");
             }
             else if (value is string)
             {
-                strValue = CvtHelper.ToStr(value);
+                strValue = value.ToStr();
             }
             else
             {
-                strValue = JsonSerializer.Serialize(value, new JsonSerializerOptions() { WriteIndented = true });
+                strValue = value.SerializeJson(this.JsonSerializerOptions);
             }
 
             return Encoding.UTF8.GetBytes(strValue);

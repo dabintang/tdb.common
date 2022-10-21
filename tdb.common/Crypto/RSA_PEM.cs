@@ -12,9 +12,9 @@ namespace tdb.common.Crypto
 	/// </summary>
 	public class RSA_PEM
 	{
-		static private Regex _PEMCode = new Regex(@"--+.+?--+|\s+");
-		static private byte[] _SeqOID = new byte[] { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
-		static private byte[] _Ver = new byte[] { 0x02, 0x01, 0x00 };
+		private static readonly Regex _PEMCode = new(@"--+.+?--+|\s+");
+		private static readonly byte[] _SeqOID = new byte[] { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
+		private static readonly byte[] _Ver = new byte[] { 0x02, 0x01, 0x00 };
 
 		/// <summary>
 		/// 用PEM格式密钥对创建RSA，支持PKCS#1、PKCS#8格式的PEM
@@ -38,57 +38,60 @@ namespace tdb.common.Crypto
 			}
 			var idx = 0;
 
-			//读取长度
-			Func<byte, int> readLen = (first) => {
-				if (data[idx] == first)
-				{
-					idx++;
-					if (data[idx] == 0x81)
-					{
-						idx++;
-						return data[idx++];
-					}
-					else if (data[idx] == 0x82)
-					{
-						idx++;
-						return (((int)data[idx++]) << 8) + data[idx++];
-					}
-					else if (data[idx] < 0x80)
-					{
-						return data[idx++];
-					}
-				}
-				throw new Exception("PEM未能提取到数据");
-			};
-			//读取块数据
-			Func<byte[]> readBlock = () => {
-				var len = readLen(0x02);
-				if (data[idx] == 0x00)
-				{
-					idx++;
-					len--;
-				}
-				var val = sub(data, idx, len);
-				idx += len;
-				return val;
-			};
-			//比较data从idx位置开始是否是byts内容
-			Func<byte[], bool> eq = (byts) => {
-				for (var i = 0; i < byts.Length; i++, idx++)
-				{
-					if (idx >= data.Length)
-					{
-						return false;
-					}
-					if (byts[i] != data[idx])
-					{
-						return false;
-					}
-				}
-				return true;
-			};
+            //读取长度
+            int readLen(byte first)
+            {
+                if (data[idx] == first)
+                {
+                    idx++;
+                    if (data[idx] == 0x81)
+                    {
+                        idx++;
+                        return data[idx++];
+                    }
+                    else if (data[idx] == 0x82)
+                    {
+                        idx++;
+                        return (((int)data[idx++]) << 8) + data[idx++];
+                    }
+                    else if (data[idx] < 0x80)
+                    {
+                        return data[idx++];
+                    }
+                }
+                throw new Exception("PEM未能提取到数据");
+            }
+            //读取块数据
+            byte[] readBlock()
+            {
+                var len = readLen(0x02);
+                if (data[idx] == 0x00)
+                {
+                    idx++;
+                    len--;
+                }
+                var val = Sub(data, idx, len);
+                idx += len;
+                return val;
+            }
+            //比较data从idx位置开始是否是byts内容
+            bool eq(byte[] byts)
+            {
+                for (var i = 0; i < byts.Length; i++, idx++)
+                {
+                    if (idx >= data.Length)
+                    {
+                        return false;
+                    }
+                    if (byts[i] != data[idx])
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }
 
-			if (pemKey.Contains("PUBLIC KEY"))
+            if (pemKey.Contains("PUBLIC KEY"))
 			{
 				/****使用公钥****/
 				//读取数据总长度
@@ -176,50 +179,54 @@ namespace tdb.common.Crypto
 			//https://blog.csdn.net/xuanshao_/article/details/51672547
 
 			var ms = new MemoryStream();
-			//写入一个长度字节码
-			Action<int> writeLenByte = (len) => {
-				if (len < 0x80)
-				{
-					ms.WriteByte((byte)len);
-				}
-				else if (len <= 0xff)
-				{
-					ms.WriteByte(0x81);
-					ms.WriteByte((byte)len);
-				}
-				else
-				{
-					ms.WriteByte(0x82);
-					ms.WriteByte((byte)(len >> 8 & 0xff));
-					ms.WriteByte((byte)(len & 0xff));
-				}
-			};
-			//写入一块数据
-			Action<byte[]> writeBlock = (byts) => {
-				var addZero = (byts[0] >> 4) >= 0x8;
-				ms.WriteByte(0x02);
-				var len = byts.Length + (addZero ? 1 : 0);
-				writeLenByte(len);
+            //写入一个长度字节码
+            void writeLenByte(int len)
+            {
+                if (len < 0x80)
+                {
+                    ms.WriteByte((byte)len);
+                }
+                else if (len <= 0xff)
+                {
+                    ms.WriteByte(0x81);
+                    ms.WriteByte((byte)len);
+                }
+                else
+                {
+                    ms.WriteByte(0x82);
+                    ms.WriteByte((byte)(len >> 8 & 0xff));
+                    ms.WriteByte((byte)(len & 0xff));
+                }
+            }
+            //写入一块数据
+            void writeBlock(byte[]? byts)
+            {
+                if (byts == null) throw new Exception("将RSA中的密钥对转换成PEM格式时发生异常.");
+                var addZero = (byts[0] >> 4) >= 0x8;
+                ms.WriteByte(0x02);
+                var len = byts.Length + (addZero ? 1 : 0);
+                writeLenByte(len);
 
-				if (addZero)
-				{
-					ms.WriteByte(0x00);
-				}
-				ms.Write(byts, 0, byts.Length);
-			};
-			//根据后续内容长度写入长度数据
-			Func<int, byte[], byte[]> writeLen = (index, byts) => {
-				var len = byts.Length - index;
+                if (addZero)
+                {
+                    ms.WriteByte(0x00);
+                }
+                ms.Write(byts, 0, byts.Length);
+            }
+            //根据后续内容长度写入长度数据
+            byte[] writeLen(int index, byte[] byts)
+            {
+                var len = byts.Length - index;
 
-				ms.SetLength(0);
-				ms.Write(byts, 0, index);
-				writeLenByte(len);
-				ms.Write(byts, index, len);
+                ms.SetLength(0);
+                ms.Write(byts, 0, index);
+                writeLenByte(len);
+                ms.Write(byts, index, len);
 
-				return ms.ToArray();
-			};
+                return ms.ToArray();
+            }
 
-			if (rsa.PublicOnly || convertToPublic)
+            if (rsa.PublicOnly || convertToPublic)
 			{
 				/****生成公钥****/
 				var param = rsa.ExportParameters(false);
@@ -321,7 +328,7 @@ namespace tdb.common.Crypto
 		/// </summary>
 		/// <param name="str"></param>
 		/// <returns></returns>
-		public static byte[] Base64DecodeBytes(string str)
+		public static byte[]? Base64DecodeBytes(string str)
 		{
 			try
 			{
@@ -336,7 +343,7 @@ namespace tdb.common.Crypto
 		/// <summary>
 		/// 从数组start开始到指定长度复制一份
 		/// </summary>
-		public static T[] sub<T>(T[] arr, int start, int count)
+		public static T[] Sub<T>(T[] arr, int start, int count)
 		{
 			T[] val = new T[count];
 			for (var i = 0; i < count; i++)
@@ -346,5 +353,4 @@ namespace tdb.common.Crypto
 			return val;
 		}
 	}
-
 }

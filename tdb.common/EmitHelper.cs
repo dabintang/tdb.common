@@ -16,14 +16,14 @@ namespace tdb.common
         /// <summary>
         /// Emit赋值动态方法
         /// </summary>
-        private static Dictionary<string, Action<T, object>> dicObjSetter = new Dictionary<string, Action<T, object>>();
+        private static readonly Dictionary<string, Action<T, object?>> dicObjSetter = new();
 
         /// <summary>
         /// Emit给对象属性赋值
         /// </summary>
         /// <param name="propertyName">属性名</param>
         /// <returns></returns>
-        public static Action<T, object> EmitSetter(string propertyName)
+        public static Action<T, object?> EmitSetter(string propertyName)
         {
             if (dicObjSetter.ContainsKey(propertyName))
             {
@@ -41,7 +41,11 @@ namespace tdb.common
                 var dynamicMethod = new DynamicMethod("EmitCallable", null, new[] { type, typeof(object) }, type.Module);
                 var iLGenerator = dynamicMethod.GetILGenerator();
 
-                var callMethod = type.GetMethod("set_" + propertyName, BindingFlags.Instance | BindingFlags.IgnoreCase | BindingFlags.Public);
+                var callMethod = type.GetMethod("set_" + propertyName, BindingFlags.Instance | BindingFlags.Public);
+                if (callMethod == null)
+                {
+                    throw new Exception($"未找到类型[{typeof(T)}]的可赋值属性[{propertyName}]。（[EmitHelper]）");
+                }
                 var parameterInfo = callMethod.GetParameters()[0];
                 var local = iLGenerator.DeclareLocal(parameterInfo.ParameterType, true);
 
@@ -64,7 +68,10 @@ namespace tdb.common
                 iLGenerator.EmitCall(OpCodes.Callvirt, callMethod, null);
                 iLGenerator.Emit(OpCodes.Ret);
 
-                var method = dynamicMethod.CreateDelegate(typeof(Action<T, object>)) as Action<T, object>;
+                if (dynamicMethod.CreateDelegate(typeof(Action<T, object?>)) is not Action<T, object?> method)
+                {
+                    throw new Exception($"为类型[{typeof(T)}]的属性[{propertyName}]生成动态赋值方式失败。（[EmitHelper]）");
+                }
                 dicObjSetter[propertyName] = method;
 
                 return method;
@@ -78,14 +85,14 @@ namespace tdb.common
         /// <summary>
         /// Emit取值动态方法
         /// </summary>
-        private static Dictionary<string, Func<T, object>> dicObjGetter = new Dictionary<string, Func<T, object>>();
+        private static readonly Dictionary<string, Func<T, object?>> dicObjGetter = new();
 
         /// <summary>
         /// Emit获取对象的属性值
         /// </summary>
         /// <param name="propertyName">属性名</param>
         /// <returns></returns>
-        public static Func<T, object> EmitGetter(string propertyName)
+        public static Func<T, object?> EmitGetter(string propertyName)
         {
             if (dicObjGetter.ContainsKey(propertyName))
             {
@@ -106,6 +113,10 @@ namespace tdb.common
                 iLGenerator.Emit(OpCodes.Ldarg_0);
 
                 var property = type.GetProperty(propertyName);
+                if (property == null || property.GetMethod == null)
+                {
+                    throw new Exception($"未找到类型[{typeof(T)}]的属性[{propertyName}]。（[EmitHelper]）");
+                }
                 iLGenerator.Emit(OpCodes.Callvirt, property.GetMethod);
 
                 if (property.PropertyType.IsValueType)
@@ -121,7 +132,10 @@ namespace tdb.common
 
                 iLGenerator.Emit(OpCodes.Ret);
 
-                var method = dynamicMethod.CreateDelegate(typeof(Func<T, object>)) as Func<T, object>;
+                if (dynamicMethod.CreateDelegate(typeof(Func<T, object?>)) is not Func<T, object?> method)
+                {
+                    throw new Exception($"为类型[{typeof(T)}]的属性[{propertyName}]生成动态取值方式失败。（[EmitHelper]）");
+                }
                 dicObjGetter[propertyName] = method;
 
                 return method;
@@ -135,7 +149,7 @@ namespace tdb.common
         /// <summary>
         /// Emit取值动态方法
         /// </summary>
-        private static Dictionary<string, Delegate> dicGenericTypeGetter = new Dictionary<string, Delegate>();
+        private static readonly Dictionary<string, Delegate> dicGenericTypeGetter = new();
 
         /// <summary>
         /// Emit获取对象的属性值
@@ -143,31 +157,42 @@ namespace tdb.common
         /// <typeparam name="ReturnT">返回类型</typeparam>
         /// <param name="propertyName">属性名</param>
         /// <returns></returns>
-        public static Func<T, ReturnT> EmitGetter<ReturnT>(string propertyName)
+        public static Func<T, ReturnT?> EmitGetter<ReturnT>(string propertyName)
         {
             if (dicGenericTypeGetter.ContainsKey(propertyName))
             {
-                return dicGenericTypeGetter[propertyName] as Func<T, ReturnT>;
+#pragma warning disable CS8603 // 可能返回 null 引用。
+                return dicGenericTypeGetter[propertyName] as Func<T, ReturnT?>;
+#pragma warning restore CS8603 // 可能返回 null 引用。
             }
 
             lock(dicGenericTypeGetter)
             {
                 if (dicGenericTypeGetter.ContainsKey(propertyName))
                 {
-                    return dicGenericTypeGetter[propertyName] as Func<T, ReturnT>;
+#pragma warning disable CS8603 // 可能返回 null 引用。
+                    return dicGenericTypeGetter[propertyName] as Func<T, ReturnT?>;
+#pragma warning restore CS8603 // 可能返回 null 引用。
                 }
 
                 var type = typeof(T);
 
-                var dynamicMethod = new DynamicMethod("get_" + propertyName, typeof(ReturnT), new[] { type }, type);
+                var dynamicMethod = new DynamicMethod("get_" + propertyName, typeof(ReturnT?), new[] { type }, type);
                 var iLGenerator = dynamicMethod.GetILGenerator();
                 iLGenerator.Emit(OpCodes.Ldarg_0);
 
                 var property = type.GetProperty(propertyName);
+                if (property == null || property.GetMethod == null)
+                {
+                    throw new Exception($"未找到类型[{typeof(T)}]的属性[{propertyName}]。（[EmitHelper]）");
+                }
                 iLGenerator.Emit(OpCodes.Callvirt, property.GetMethod);
                 iLGenerator.Emit(OpCodes.Ret);
 
-                var method = dynamicMethod.CreateDelegate(typeof(Func<T, ReturnT>)) as Func<T, ReturnT>;
+                if (dynamicMethod.CreateDelegate(typeof(Func<T, ReturnT?>)) is not Func<T, ReturnT?> method)
+                {
+                    throw new Exception($"为类型[{typeof(T)}]的属性[{propertyName}]生成动态取值方式失败。（[EmitHelper]）");
+                }
                 dicGenericTypeGetter[propertyName] = method;
 
                 return method;

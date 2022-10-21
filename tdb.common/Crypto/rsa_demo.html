@@ -1,42 +1,73 @@
 ﻿<html>
 <head>
-    <script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
-    <script src="http://passport.cnblogs.com/scripts/jsencrypt.min.js"></script>
+	<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+	<script src="jsencrypt.min.js"></script><!--https://gitee.com/mirrors/jsrsasign-->
+	<script src="crypto-js.js"></script><!--https://github.com/brix/crypto-js-->
 </head>
 <body>
-    <input type="text" id="txtEncrypt" /> <button id="btnEncrypt">加密</button>  <span id="spEncrypt"></span>
-    <br />
-    <input type="text" id="txtDecrypt" width="600px" /> <button id="btnDecrypt">解密</button>  <span id="spDecrypt"></span>
+	<input type="text" id="txtEncrypt" style="width: 25%; min-width: 50px;" /> <button id="btnEncrypt">公钥加密</button>  <span id="spEncrypt"></span>
+	<br />
+	<input type="text" id="txtDecrypt" style="width: 25%; min-width: 50px;" /> <button id="btnDecrypt">私钥解密</button>  <span id="spDecrypt"></span>
+	<br />
+	<input type="text" id="txtSign" style="width:25%;min-width:50px;" /> <button id="btnSign">私钥签名</button>  <span id="spSign"></span>
+	<br />
+	<input type="text" id="txtVerifyText" style="width:10%;min-width:20px;" /><input type="text" id="txtVerifySign" style="width:15%;min-width:30px;" /> <button id="btnVerify">公钥验签</button>  <span id="spVerify"></span>
 
-    <script>
-	var publicKey = "-----BEGIN PUBLIC KEY-----MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDf6qvrZrByXWw/u6mZDscSMbdptdTK1S54Cm2+ozPlwONDuCdXMwgAkFlpolqDdZZghE9fQN/OI5Nn6W9vqSQ30VOAikUolwnUOE51zsojsAu9aU9ULPA2KtSeGRGHRgE8pmc1gAlwaIGtumr+t9UGd7K1uPi0mDzkVjAcEh262QIDAQAB-----END PUBLIC KEY-----";
-	var privateKey = "-----BEGIN PRIVATE KEY-----MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAN/qq+tmsHJdbD+7qZkOxxIxt2m11MrVLngKbb6jM+XA40O4J1czCACQWWmiWoN1lmCET19A384jk2fpb2+pJDfRU4CKRSiXCdQ4TnXOyiOwC71pT1Qs8DYq1J4ZEYdGATymZzWACXBoga26av631QZ3srW4+LSYPORWMBwSHbrZAgMBAAECgYEAjT5+i9MO4lVD/z/lT4Me1788rxXf0MKAuX/6khJonjj6IrF7P2oVViW4AQZEikAWR3Oujatigam3RgjeHlVXXiARXvzBIv0mO5oz0A3Dt5nCcu3GOF+jwubuC+IGTRZnvJp6VP9BiLpHM1/x78u0kP+/WtND5ktzHJ7FcgvGd3ECQQDm/KKlm4raVPG39FKYE2dzBH0dCb44YMU3ydcHC+sjp7y0tsS1Qh3mKXFrZgKe2ymFnHm1AW0p/oCbIanvgyqLAkEA+CoJ3zZcrSsIsb9cAISd4sDGk2ebUaVY2yhips2PeOQ+acgfyKH4DK/Juh4gy/zuIlydi1fMgAt2LD5SUprwqwJAD5wxLbn2R00ITONBFa/yBM7f2a+H4G2BxoRoeLxwdqdmVFwprQo71Qsl9BkfwjaTdskdXIMtKnJdpJ5AysP1gwJBAIePr0TXlVijIWS3e7JsvzKWy+LJvfajtB5DuWAU+kK3q8BtKa+XisCjZjbdLl1AFXV/0i/EDloD6NHSWXX2XXECQHVriRb85PoEWdSp9kPVFTN+qzfEtd0hx/Y6hWbxYRfI3JrJeJXi20ZkVeOZ60tvFLzopCzRT39Ohwp3SnQcIxQ=-----END PRIVATE KEY-----";
+	<script>
+		var publicKey = "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDbh2tm2dVAqJn + d5r + Dc / JSzvwiZWwySziGfp9TmegUQJJXwezuP2jLz2JEJFBX + gdjE6ArKem1YO3DdJjg4MiNFopEUj9L1f81ErvFKcnLHXOdmgbncbs6pddufw / zCcCO + MPa8CaKlSILUOkB6ldnhSfNf1QiYuCtd / mMm789QIDAQAB\n-----END PUBLIC KEY-----";
+		var privateKey = "-----BEGIN RSA PRIVATE KEY-----\nMIICWwIBAAKBgQDbh2tm2dVAqJn + d5r + Dc / JSzvwiZWwySziGfp9TmegUQJJXwezuP2jLz2JEJFBX + gdjE6ArKem1YO3DdJjg4MiNFopEUj9L1f81ErvFKcnLHXOdmgbncbs6pddufw / zCcCO + MPa8CaKlSILUOkB6ldnhSfNf1QiYuCtd / mMm789QIDAQABAoGAfBRUfjONNxiUwaF0tzezRAEEBfad5uguODWawQx5wcFH25Sc09YxdfSTgU8d6qd8mIbfMBdmQwPXiLWFPr3sdXK1qrFCR1la8YlZov2mPv39lksasva9OSSYPqPP67nJetDnWKJQSxssd783dx4IgwEn4lXsMmbrAHdScq72QxkCQQDnbdTSKbSqA6OxklISivhlpjoDT6L1FzuM6PQhM5cogc321u / AEKGgla9s / atvL8BtTUNWgCZ5asyj84kfsExrAkEA8tYmD3TrzevfzYNo1aZGfmgMzt4nu / BzTkYaHntJGkI4OF8PTr2oplUn + 1c / F472Slf0tLEemMOKVaG1ybA0HwJAVLcZrozhu1J1u2yqamtAnkUI + 2lNZ5ZHkD8 + DmFKNeO + N1tai94KrDPe8XCyLpM2R0x / F8z1SIDVxDZDvbvVXQJAd0wFPqqt / WfXdtsL8YnSL99mC2rQEmA6BUYjJr5iV2gYvnjUyFYcODq1faCK + kPdcwBq0yoAYgQOPatH52GM + QJALvU5ox / re69BAzQg6HP52xeem / nSTq1 + M0Q0i48r9xykGKd + a4TCcBAA7NbW00ijEHP4RItX7qVTLt9i4 + pkWg ==\n-----END RSA PRIVATE KEY-----";
 
-	$(function(){
+		$(function () {
 
-		//加密
-		$('#btnEncrypt').on("click", function () {
-			//明文
-			var plaintext = $("#txtEncrypt").val();
+			//公钥加密
+			$('#btnEncrypt').on("click", function () {
+				//明文
+				var plaintext = $("#txtEncrypt").val();
 
-			//使用公钥加密
-			var encrypt = new JSEncrypt();
-			encrypt.setPublicKey(publicKey);
-			$("#spEncrypt").text(encrypt.encrypt(plaintext));
+				//使用公钥加密
+				var encrypt = new JSEncrypt();
+				encrypt.setPublicKey(publicKey);
+				$("#spEncrypt").text(encrypt.encrypt(plaintext));
+			});
+
+			//私钥解密
+			$('#btnDecrypt').on("click", function () {
+				//密文
+				var ciphertext = $("#txtDecrypt").val();
+
+				//使用私钥解密
+				var encrypt = new JSEncrypt();
+				encrypt.setPrivateKey(privateKey);
+				$("#spDecrypt").text(encrypt.decrypt(ciphertext));
+			});
+
+			//私钥签名
+			$('#btnSign').on("click", function () {
+				//待签名文本
+				var text = $("#txtSign").val();
+
+				//使用私钥签名
+				var sign = new JSEncrypt();
+				sign.setPrivateKey(privateKey);
+				var signature = sign.sign(text, CryptoJS.SHA256, "sha256");
+				$("#spSign").text(signature);
+			});
+
+            //公钥验签
+            $('#btnVerify').on("click", function () {
+                //未签名文本
+				var text = $("#txtVerifyText").val();
+				//签名
+                var signature = $("#txtVerifySign").val();
+
+                //使用私钥签名
+                var verify = new JSEncrypt();
+                verify.setPublicKey(publicKey);
+                var verified = verify.verify(text, signature, CryptoJS.SHA256);
+                $("#spVerify").text(verified);
+            });
 		});
 
-		//解密
-		$('#btnDecrypt').on("click", function () {
-			//密文
-			var ciphertext = $("#txtDecrypt").val();
-
-			//使用私钥解密
-			var encrypt = new JSEncrypt();
-			encrypt.setPrivateKey (privateKey);
-			$("#spDecrypt").text(encrypt.decrypt(ciphertext));
-		});
-	});
-
-    </script>
+	</script>
 </body>
 </html>

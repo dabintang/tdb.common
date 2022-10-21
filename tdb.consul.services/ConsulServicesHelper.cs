@@ -35,7 +35,7 @@ namespace tdb.consul.services
             TimeSpan? deregisterCriticalServiceAfter,
             TimeSpan? interval,
             TimeSpan? timeout,
-            IHostApplicationLifetime appLifetime)
+            IHostApplicationLifetime? appLifetime)
         {
             //Consul地址
             var consulClient = new ConsulClient(p => { p.Address = new Uri($"http://{consulIP}:{consulPort}"); });
@@ -56,7 +56,7 @@ namespace tdb.consul.services
                 Name = serviceName, //服务名（如果服务搭集群，它们的服务名应该是一样的，但是ID不一样）
                 Address = $"{serviceIP}", //服务地址
                 Port = servicePort, //服务端口
-                Tags = new string[] { }, //服务标签，一般可以用来设置权重等本地服务特有信息
+                Tags = Array.Empty<string>(), //服务标签，一般可以用来设置权重等本地服务特有信息
                 Checks = new[] { httpCheck }, //心跳检测设置
             };
 
@@ -64,10 +64,13 @@ namespace tdb.consul.services
             consulClient.Agent.ServiceRegister(registration).Wait();
 
             //关闭程序后注销到Consul
-            appLifetime.ApplicationStopped.Register(() =>
+            if (appLifetime != null)
             {
-                consulClient.Agent.ServiceDeregister(registration.ID).Wait();
-            });
+                appLifetime.ApplicationStopped.Register(() =>
+                {
+                    consulClient.Agent.ServiceDeregister(registration.ID).Wait();
+                });
+            }
         }
 
         /// <summary>
@@ -79,15 +82,13 @@ namespace tdb.consul.services
         /// <returns></returns>
         public static CatalogService[] FindServices(string consulIP, int consulPort, string serviceName)
         {
-            using (var consul = new ConsulClient(c =>
+            using var consul = new ConsulClient(c =>
             {
                 c.Address = new Uri($"http://{consulIP}:{consulPort}"); //Consul地址
-            }))
-            {
-                //获取服务
-                var services = consul.Catalog.Service(serviceName).Result.Response;
-                return services;
-            }
+            });
+            //获取服务
+            var services = consul.Catalog.Service(serviceName).Result.Response;
+            return services;
         }
     }
 }

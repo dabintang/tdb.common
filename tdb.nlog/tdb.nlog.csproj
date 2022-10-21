@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.1.1.2</Version>
-    <Authors>tangdabin</Authors>
-    <Product>tdb</Product>
-    <Company>tdb</Company>
-    <Description>简单封装nlog操作</Description>
-    <PackageReleaseNotes>日志构造函数添加配置文件名参赛</PackageReleaseNotes>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>tdb</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>E:\tdb\github\svn\tdb.common\tdb.nlog\tdb.nlog.xml</DocumentationFile>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>6.0.0.1</Version>
+    <Authors>tangdabin</Authors>
+    <Company>tdb</Company>
+    <Product>tdb</Product>
+    <Description>简单封装nlog操作</Description>
+    <Copyright></Copyright>
+    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
+    <PackageTags>tdb</PackageTags>
+    <PackageReleaseNotes>升级.NET版本到.NET6</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AnalysisLevel>5.0</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,15 +27,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="NLogger.cs">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Compile>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="NLog.config">
+    <None Update="nlog.config">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
 </Project>

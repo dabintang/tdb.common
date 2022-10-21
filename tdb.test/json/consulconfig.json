@@ -1,0 +1,16 @@
+{
+  "DBConnStr": "Server=127.0.0.1;Port=3306;Database=tdb.consul;Uid=root;Password=123456;Charset=utf8;Pooling=True;Allow User Variables=True;SslMode=none;", //数据库连接字符串
+  "DBLogConnStr": "Server=127.0.0.1;Port=3306;Database=tdb.logs;Uid=root;Password=123456;Charset=utf8;Pooling=True;Allow User Variables=True;SslMode=none;", //日志数据库连接字符串
+  //redis配置
+  "Redis": {
+    "ConnectString": [ "127.0.0.1:6379,password=,defaultDatabase=0,idleTimeout=30000,poolsize=10,ssl=false,writeBuffer=10240,prefix=Test_" ] //连接字符串
+  },
+  //认证相关配置
+  "Token": {
+    "Issuer": "tdb", //发行者
+    "Audience": "tdb2", //接收者
+    "SecretKey": "1234567890223456", //秘钥（至少16位）
+    "TimeoutSeconds": 3600 //超时时间（秒）
+  },
+  "DefaultPassword": "abc123" //默认密码
+}

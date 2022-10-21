@@ -1,23 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.1.1.2</Version>
-    <Authors>tangdabin</Authors>
-    <Company>tdb</Company>
-    <Description>把consul的key/value作分布式配置</Description>
-    <Copyright></Copyright>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageTags>tdb</PackageTags>
-    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReleaseNotes>1、替换json序列化工具：Newtonsoft.Json -&gt; System.Text.Json
-2、更新组件</PackageReleaseNotes>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>6.0.0.1</Version>
+    <Authors>tangdabin</Authors>
+    <Company>tdb</Company>
+    <Product>tdb</Product>
+    <Description>把consul的key/value作分布式配置</Description>
+    <Copyright></Copyright>
+    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
+    <PackageTags>tdb</PackageTags>
+    <PackageReleaseNotes>升级.NET版本到.NET6</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AnalysisLevel>5.0</AnalysisLevel>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Consul" Version="1.6.10.7" />

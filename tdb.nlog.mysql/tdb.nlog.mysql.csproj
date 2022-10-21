@@ -1,24 +1,30 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
-    <Version>2.1.1.2</Version>
-    <Authors>tangdabin</Authors>
-    <Company>tdb</Company>
-    <Description>nlog保存到mysql的简单封装</Description>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageTags>tdb</PackageTags>
-    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageReleaseNotes>日志构造函数添加配置文件名参赛</PackageReleaseNotes>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Version>6.0.0.1</Version>
+    <Authors>tangdabin</Authors>
+    <Company>tdb</Company>
+    <Product>tdb</Product>
+    <Description>nlog保存到mysql的简单封装</Description>
+    <Copyright></Copyright>
+    <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
+    <PackageTags>tdb</PackageTags>
+    <PackageReleaseNotes>升级.NET版本到.NET6</PackageReleaseNotes>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <AnalysisLevel>5.0</AnalysisLevel>
   </PropertyGroup>
-
+  
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.30" />
+    <PackageReference Include="MySql.Data" Version="8.0.31" />
+    <PackageReference Include="NLog.Database" Version="5.0.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -26,9 +32,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="NLog.config">
+    <None Update="nlog.config">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
 </Project>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Text.Json;
 using tdb.common;
 
 namespace tdb.consul.kv
@@ -21,13 +20,13 @@ namespace tdb.consul.kv
         /// <param name="consulPort">consul服务端口</param>
         /// <param name="prefixKey">key前缀，一般用来区分不同服务</param>
         /// <returns>consul配置信息</returns>
-        public static T GetConfig<T>(string consulIP, int consulPort, string prefixKey) where T : class, new()
+        public static async Task<T> GetConfigAsync<T>(string consulIP, int consulPort, string prefixKey) where T : class, new()
         {
             Dictionary<string, string> dicPair;
             using (var kv = new ConsulKV(consulIP, consulPort, prefixKey))
             {
                 //获取所有key/value
-                dicPair = kv.List();
+                dicPair = await kv.ListAsync();
             }
 
             //创建对象
@@ -41,7 +40,7 @@ namespace tdb.consul.kv
             {
                 //特性
                 var attr = pro.GetCustomAttributes<ConsulConfigAttribute>().FirstOrDefault();
-                var key = $"{prefixKey}{attr.Key}";
+                var key = $"{prefixKey}{attr?.Key}";
                 if (attr == null || dicPair.ContainsKey(key) == false)
                 {
                     continue;
@@ -63,7 +62,7 @@ namespace tdb.consul.kv
                 }
                 else
                 {
-                    var value = JsonSerializer.Deserialize(strValue, pro.PropertyType);
+                    var value = strValue.DeserializeJson(pro.PropertyType);
                     CommHelper.EmitSet(obj, pro.Name, value);
                 }
             }
@@ -80,14 +79,19 @@ namespace tdb.consul.kv
         /// <param name="config">consul配置信息</param>
         /// <param name="prefixKey">key前缀，一般用来区分不同服务</param>
         /// <returns></returns>
-        public static bool PutConfig<T>(string consulIP, int consulPort, T config, string prefixKey) where T : class
+        public static async Task<bool> PutConfig<T>(string consulIP, int consulPort, T config, string prefixKey) where T : class
         {
             //配置信息字典
-            var dicConfig = new Dictionary<string, object>();
+            var dicConfig = new Dictionary<string, object?>();
 
             Type type = typeof(T);
             //获取对象属性
             var pros = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            if (pros == null)
+            {
+                return true;
+            }
+
             //找出有配置特性的属性，并把属性对应放入字典
             foreach (var pro in pros)
             {
@@ -101,11 +105,9 @@ namespace tdb.consul.kv
                 dicConfig[attr.Key] = CommHelper.EmitGet(config, pro.Name);
             }
 
-            using (var kv = new ConsulKV(consulIP, consulPort, prefixKey))
-            {
-                //写入consul
-                return kv.PutAll(dicConfig);
-            }
+            using var kv = new ConsulKV(consulIP, consulPort, prefixKey);
+            //写入consul
+            return await kv.PutAllAsync(dicConfig);
         }
     }
 }

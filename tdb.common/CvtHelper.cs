@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using tdb.common.Enums;
+using tdb.common.Json;
 
 namespace tdb.common
 {
@@ -14,34 +15,48 @@ namespace tdb.common
     public static class CvtHelper
     {
         /// <summary>
-        /// 对象转换为字典
+        /// 构造函数
+        /// </summary>
+        static CvtHelper()
+        {
+            //json序列化默认格式
+            DefaultOptions = new JsonSerializerOptions();
+            DefaultOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;//编码：汉子、HTML代码等原样序列化
+            DefaultOptions.IncludeFields = true; //包含变量字段
+            DefaultOptions.PropertyNameCaseInsensitive = true; //属性名不区分大小写
+            DefaultOptions.PropertyNamingPolicy = null; //属性名原样输出（不改变大小写）
+            DefaultOptions.ReadCommentHandling = JsonCommentHandling.Skip; //跳过注释
+            DefaultOptions.Converters.Add(new DateTimeJsonConverter("yyyy-MM-dd HH:mm:ss")); //日期格式
+        }
+
+        /// <summary>
+        /// 对象（公共属性）转换为字典
         /// </summary>
         /// <param name="obj">待转化的对象</param>
         /// <param name="isIgnoreNull">是否忽略NULL</param>
         /// <returns></returns>
-        public static Dictionary<string, object> ToDictionary(this object obj, bool isIgnoreNull = false)
+        public static Dictionary<string, object?> ToDictionary(this object obj, bool isIgnoreNull = false)
         {
-            Dictionary<string, object> map = new Dictionary<string, object>();
+            var dic = new Dictionary<string, object?>();
 
             Type t = obj.GetType(); // 获取对象对应的类， 对应的类型
             PropertyInfo[] pi = t.GetProperties(BindingFlags.Public | BindingFlags.Instance); // 获取当前type公共属性
 
             foreach (PropertyInfo p in pi)
             {
-                MethodInfo m = p.GetGetMethod();
-
-                if (m != null && m.IsPublic)
+                MethodInfo? method = p.GetGetMethod();
+                if (method != null && method.IsPublic)
                 {
-                    var value = m.Invoke(obj, new object[] { });
+                    var value = method.Invoke(obj, Array.Empty<object>());
 
                     // 进行判NULL处理 
                     if (value != null || !isIgnoreNull)
                     {
-                        map.Add(p.Name, value); // 向字典添加元素
+                        dic.Add(p.Name, value); // 向字典添加元素
                     }
                 }
             }
-            return map;
+            return dic;
         }
 
         /// <summary>
@@ -108,7 +123,7 @@ namespace tdb.common
                 return string.Empty;
             }
 
-            return Convert.ToString(value);
+            return Convert.ToString(value) ?? String.Empty;
         }
 
         /// <summary>
@@ -117,22 +132,21 @@ namespace tdb.common
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T DeepClone<T>(this T value)
+        public static T? DeepClone<T>(this T value)
         {
+            if (value == null)
+            {
+                return default;
+            }
+
             var jsonStr = JsonSerializer.Serialize(value, new JsonSerializerOptions() { IncludeFields = true });
             return JsonSerializer.Deserialize<T>(jsonStr, new JsonSerializerOptions() { IncludeFields = true });
         }
 
         /// <summary>
-        /// 默认配置
+        /// json序列化默认格式
         /// </summary>
-        public static JsonSerializerOptions DefaultOptions = new JsonSerializerOptions()
-        {
-            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping, //编码：汉子、HTML代码等原样序列化
-            IncludeFields = true, //包含变量字段
-            PropertyNameCaseInsensitive = true, //属性名不区分大小写
-            PropertyNamingPolicy = null, //属性名原样输出（不改变大小写）
-        };
+        public readonly static JsonSerializerOptions DefaultOptions;
 
         /// <summary>
         /// 序列化为json字符串
@@ -141,7 +155,7 @@ namespace tdb.common
         /// <param name="value">需要序列号的值</param>
         /// <param name="options">用于控制序列化行为的选项</param>
         /// <returns>josn字符串</returns>
-        public static string SerializeJson<TValue>(this TValue value, JsonSerializerOptions options = null)
+        public static string SerializeJson<TValue>(this TValue value, JsonSerializerOptions? options = null)
         {
             //如果未指定序列化选项，使用默认序列化选项
             options = options ?? DefaultOptions;
@@ -156,7 +170,7 @@ namespace tdb.common
         /// <param name="json">json字符串</param>
         /// <param name="options">用于控制反序列化行为的选项</param>
         /// <returns>目标对象</returns>
-        public static TValue DeserializeJson<TValue>(this string json, JsonSerializerOptions? options = null)
+        public static TValue? DeserializeJson<TValue>(this string json, JsonSerializerOptions? options = null)
         {
             //如果未指定序列化选项，使用默认序列化选项
             options = options ?? DefaultOptions;
@@ -171,7 +185,7 @@ namespace tdb.common
         /// <param name="returnType">反序列化目标类型</param>
         /// <param name="options">用于控制反序列化行为的选项</param>
         /// <returns>目标对象</returns>
-        public static object DeserializeJson(this string json, Type returnType, JsonSerializerOptions options = null)
+        public static object? DeserializeJson(this string json, Type returnType, JsonSerializerOptions? options = null)
         {
             //如果未指定序列化选项，使用默认序列化选项
             options = options ?? DefaultOptions;
@@ -199,9 +213,7 @@ namespace tdb.common
 //            //null直接返回
 //            if (value == null)
 //            {
-//#pragma warning disable CS8603 // 可能返回 null 引用。
 //                return default;
-//#pragma warning restore CS8603 // 可能返回 null 引用。
 //            }
 
 //            //泛型类型

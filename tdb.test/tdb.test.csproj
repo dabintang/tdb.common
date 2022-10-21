@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <UserSecretsId>4cd308fb-5e96-497b-bff7-98a4d6c087a2</UserSecretsId>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -10,11 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\tdb.appsettings\tdb.appsettings.csproj" />
+    <ProjectReference Include="..\tdb.common\tdb.common.csproj" />
     <ProjectReference Include="..\tdb.consul.kv\tdb.consul.kv.csproj" />
     <ProjectReference Include="..\tdb.consul.services\tdb.consul.services.csproj" />
-    <ProjectReference Include="..\tdb.csredis\tdb.csredis.csproj" />
-    <ProjectReference Include="..\tdb.jwt\tdb.jwt.csproj" />
     <ProjectReference Include="..\tdb.nlog.mysql\tdb.nlog.mysql.csproj" />
     <ProjectReference Include="..\tdb.nlog\tdb.nlog.csproj" />
   </ItemGroup>
@@ -23,7 +22,7 @@
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Update="nlog.config">
+    <Content Update="json\consulconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Update="Configs\nlog2.config">

@@ -29,22 +29,17 @@ namespace tdb.nlog.mysql
         /// 构造函数
         /// </summary>
         /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="serviceCode">服务编码</param>
+        /// <param name="serviceID">服务ID</param>
         /// <param name="serviceAddress">服务地址</param>
         /// <param name="logConfigFile">日志配置文件</param>
-        public NLogger(string connectionString, string serviceCode = "", string serviceAddress = "", string logConfigFile = "") : base(logConfigFile)
+        public NLogger(string connectionString, int serviceID = 0, string serviceAddress = "", string logConfigFile = "") : base(logConfigFile)
         {
             GlobalDiagnosticsContext.Set("dbConnectionString", connectionString);
-            if (string.IsNullOrWhiteSpace(serviceCode) == false)
-            {
-                LogManager.Configuration.Variables["serviceCode"] = serviceCode;
-            }
+            LogManager.Configuration.Variables["serviceID"] = Convert.ToString(serviceID);
             if (string.IsNullOrWhiteSpace(serviceAddress) == false)
             {
                 LogManager.Configuration.Variables["serviceAddress"] = serviceAddress;
             }
-
-            this.logger = NLog.LogManager.GetCurrentClassLogger();
         }
     }
 }

@@ -40,97 +40,134 @@ namespace tdb.common
                         .SelectMany(p => p.UnicastAddresses)
                         .Where(p => p.Address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(p.Address))
                         .OrderByDescending(p => p.DuplicateAddressDetectionState)
-                        .FirstOrDefault()?.Address.ToString();
+                        .FirstOrDefault()?.Address.ToString() ?? "";
             return ip;
         }
 
         /// <summary>
-        /// 反射方式给属性赋值
+        /// 反射方式给公开属性或公开字段赋值
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="propertyName">属性名</param>
-        /// <param name="propertyValue">值</param>
-        public static void ReflectSet(object obj, string propertyName, object propertyValue)
+        /// <param name="propertyOrFieldName">属性或字段名（区分大小写）</param>
+        /// <param name="value">值</param>
+        public static void ReflectSet(object obj, string propertyOrFieldName, object? value)
         {
             var type = obj.GetType();
-            var propertyInfo = type.GetProperty(propertyName);
-            propertyInfo.SetValue(obj, propertyValue, null);
+
+            //先尝试获取属性
+            var propertyInfo = type.GetProperty(propertyOrFieldName);
+            if (propertyInfo != null)
+            {
+                propertyInfo.SetValue(obj, value, null);
+                return;
+            }
+
+            //如果属性获取不到，尝试获取字段
+            var fieldInfo = type.GetField(propertyOrFieldName);
+            if (fieldInfo != null)
+            {
+                fieldInfo.SetValue(obj, value);
+                return;
+            }
+
+            throw new Exception($"对象没有名为{propertyOrFieldName}的属性或字段");
         }
 
         /// <summary>
-        /// 反射方式获取属性值
+        /// 反射方式获取公开属性或公开字段值
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="propertyName">属性名</param>
-        public static object ReflectGet(object obj, string propertyName)
+        /// <param name="propertyOrFieldName">属性或字段名（区分大小写）</param>
+        public static object? ReflectGet(object obj, string propertyOrFieldName)
         {
             var type = obj.GetType();
-            var propertyInfo = type.GetProperty(propertyName);
-            return propertyInfo.GetValue(obj);
+
+            //先尝试获取属性
+            var propertyInfo = type.GetProperty(propertyOrFieldName);
+            if (propertyInfo != null)
+            {
+                return propertyInfo.GetValue(obj);
+            }
+
+            //如果属性获取不到，尝试获取字段
+            var fieldInfo = type.GetField(propertyOrFieldName);
+            if (fieldInfo != null)
+            {
+                return fieldInfo.GetValue(obj);
+            }
+
+            throw new Exception($"对象没有名为{propertyOrFieldName}的属性或字段");
         }
 
         /// <summary>
-        /// emit方式给属性赋值
+        /// emit方式给公开属性赋值（注：只支持属性）
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="obj">对象</param>
-        /// <param name="propertyName">属性名</param>
-        /// <param name="propertyValue">值</param>
-        public static void EmitSet<T>(T obj, string propertyName, object propertyValue) where T : class
+        /// <param name="propertyName">属性名（区分大小写）</param>
+        /// <param name="value">值</param>
+        public static void EmitSet<T>(T obj, string propertyName, object? value) where T : class
         {
             var setter = EmitHelper<T>.EmitSetter(propertyName);
-            setter(obj, propertyValue);
+            setter(obj, value);
         }
 
         /// <summary>
-        /// emit方式获取属性值
+        /// emit方式获取公开属性值（注：只支持属性）
         /// </summary>
         /// <typeparam name="T">对象类型</typeparam>
         /// <param name="obj">对象</param>
-        /// <param name="propertyName">属性名</param>
+        /// <param name="propertyName">属性名（区分大小写）</param>
         /// <returns></returns>
-        public static object EmitGet<T>(T obj, string propertyName) where T : class
+        public static object? EmitGet<T>(T obj, string propertyName) where T : class
         {
             var getter = EmitHelper<T>.EmitGetter(propertyName);
             return getter(obj);
         }
 
         /// <summary>
-        /// emit方式获取属性值
+        /// emit方式获取公开属性值（注：只支持属性）
         /// </summary>
         /// <typeparam name="ObjectT">对象类型</typeparam>
         /// <typeparam name="ReturnT">返回类型</typeparam>
         /// <param name="obj">对象</param>
-        /// <param name="propertyName">属性名</param>
+        /// <param name="propertyName">属性名（区分大小写）</param>
         /// <returns></returns>
-        public static ReturnT EmitGet<ObjectT, ReturnT>(ObjectT obj, string propertyName) where ObjectT : class
+        public static ReturnT? EmitGet<ObjectT, ReturnT>(ObjectT obj, string propertyName) where ObjectT : class
         {
             var getter = EmitHelper<ObjectT>.EmitGetter<ReturnT>(propertyName);
             return getter(obj);
         }
 
         /// <summary>
-        /// 对象是否存在某属性
+        /// 对象是否存在某属性或字段
         /// key1：对象类型；key2：属性名
         /// </summary>
-        private static Dictionary<string, HashSet<string>> _dicObjProperty = new Dictionary<string, HashSet<string>>();
+        private static readonly Dictionary<string, HashSet<string>> _dicObjProperty = new();
         /// <summary>
-        /// 判断对象是否存在某属性
+        /// 判断对象是否存在某公开属性或公开字段
         /// </summary>
         /// <param name="obj">对象</param>
-        /// <param name="propertyName">属性名</param>
+        /// <param name="propertyOrFieldName">属性或字段名（区分大小写）</param>
         /// <returns></returns>
-        public static bool IsExistProperty(object obj, string propertyName)
+        public static bool IsExistPropertyOrField(object obj, string propertyOrFieldName)
         {
             var type = obj.GetType();
-            var typeName = type.FullName;
+            var typeName = type.FullName ?? "";
             if (_dicObjProperty.ContainsKey(typeName) == false)
             {
-                _dicObjProperty[typeName] = type.GetProperties().Select(m => m.Name).ToHashSet();
+                //所有属性名
+                var proSet = type.GetProperties().Select(m => m.Name).ToHashSet();
+                //所有字段名
+                var fieldSet = type.GetFields().Select(m => m.Name).ToHashSet();
+                //属性名+字段名
+                proSet.UnionWith(fieldSet);
+
+                _dicObjProperty[typeName] = proSet;
             }
 
             var proNames = _dicObjProperty[typeName];
-            return proNames.Contains(propertyName);
+            return proNames.Contains(propertyOrFieldName);
         }
     }
 }

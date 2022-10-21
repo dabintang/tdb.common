@@ -65,7 +65,7 @@ namespace tdb.common
             string body, 
             bool isBodyHtml, 
             List<string> lstTo, 
-            List<string> lstCC, 
+            List<string>? lstCC, 
             params string[] attachments)
         {
             //邮件发送类 

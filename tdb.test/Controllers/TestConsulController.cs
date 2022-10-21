@@ -21,13 +21,10 @@ namespace tdb.test.Controllers
     {
         const string consulIP = "127.0.0.1";
         const int consulPort = 8500;
-
-        readonly IConfiguration _config;
         readonly IHostApplicationLifetime _appLifetime;
 
-        public TestConsulController(IConfiguration config, IHostApplicationLifetime appLifetime)
+        public TestConsulController(IHostApplicationLifetime appLifetime)
         {
-            _config = config;
             _appLifetime = appLifetime;
         }
 
@@ -49,8 +46,8 @@ namespace tdb.test.Controllers
         [HttpPost]
         public IActionResult RegisterToConsul()
         {
-            ConsulServicesHelper.RegisterToConsul(consulIP, consulPort, "127.0.0.1", 5000, "TestServiceName", "http://127.0.0.1:5000/api/Consul/HealthCheck",
-                TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(10), _appLifetime);
+            ConsulServicesHelper.RegisterToConsul(consulIP, consulPort, "127.0.0.1", 19001, "TestServiceName", "http://127.0.0.1:19001/api/TestConsul/HealthCheck",
+                TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(5), _appLifetime);
 
             return Ok();
         }
@@ -64,7 +61,7 @@ namespace tdb.test.Controllers
         public string FindServices(string serviceName)
         {
             var lstService = ConsulServicesHelper.FindServices(consulIP, consulPort, serviceName);
-            var jsonStr = JsonSerializer.Serialize(lstService);
+            var jsonStr = lstService.SerializeJson();
 
             return jsonStr;
         }
@@ -77,9 +74,9 @@ namespace tdb.test.Controllers
         /// <param name="prefixKey">key前缀</param>
         /// <returns></returns>
         [HttpGet]
-        public ConsulConfig GetConfig(string consulIP, int consulPort, string prefixKey)
+        public async Task<ConsulConfig> GetConfig(string consulIP, int consulPort, string prefixKey)
         {
-            var config = ConsulConfigHelper.GetConfig<ConsulConfig>(consulIP, consulPort, prefixKey);
+            var config = await ConsulConfigHelper.GetConfigAsync<ConsulConfig>(consulIP, consulPort, prefixKey);
             return config;
         }
 
@@ -91,12 +88,12 @@ namespace tdb.test.Controllers
         /// <param name="prefixKey">key前缀</param>
         /// <returns></returns>
         [HttpPost]
-        public string BackupConfig(string consulIP, int consulPort, string prefixKey)
+        public async Task<string> BackupConfig(string consulIP, int consulPort, string prefixKey)
         {
-            var config = ConsulConfigHelper.GetConfig<ConsulConfig>(consulIP, consulPort, prefixKey);
-            var jsonStr = JsonSerializer.Serialize(config);
+            var config = await ConsulConfigHelper.GetConfigAsync<ConsulConfig>(consulIP, consulPort, prefixKey);
+            var jsonStr = config.SerializeJson();
 
-            var fullFileName = CommHelper.GetFullFileName($"backup\\kv\\config_{DateTime.Now.ToString("yyyyMMddHHmmss")}.json");
+            var fullFileName = CommHelper.GetFullFileName($"backup\\kv\\config_{DateTime.Now:yyyyMMddHHmmss}.json");
             var path = Path.GetDirectoryName(fullFileName);
             if (Directory.Exists(path) == false)
             {
@@ -116,18 +113,16 @@ namespace tdb.test.Controllers
         /// <param name="file">配置文件</param>
         /// <returns></returns>
         [HttpPost]
-        public bool RestoreConfig(string consulIP, int consulPort,string prefixKey, IFormFile file)
+        public async Task<bool> RestoreConfig(string consulIP, int consulPort, string prefixKey, IFormFile file)
         {
-            using (var stream = file.OpenReadStream())
-            {
-                stream.Seek(0, SeekOrigin.Begin);
-                byte[] bytes = new byte[stream.Length];
-                stream.Read(bytes, 0, bytes.Length);
+            using var stream = file.OpenReadStream();
+            stream.Seek(0, SeekOrigin.Begin);
+            byte[] bytes = new byte[stream.Length];
+            stream.Read(bytes, 0, bytes.Length);
 
-                var json = Encoding.Default.GetString(bytes);
-                var config = JsonSerializer.Deserialize<ConsulConfig>(json);
-                return ConsulConfigHelper.PutConfig(consulIP, consulPort, config, prefixKey);
-            }
+            var json = Encoding.UTF8.GetString(bytes);
+            var config = json.DeserializeJson<ConsulConfig>();
+            return await ConsulConfigHelper.PutConfig(consulIP, consulPort, config, prefixKey);
         }
     }
 

@@ -20,14 +20,14 @@ namespace tdb.test.Controllers
         [HttpGet]
         public void TestAsync(int sleepSec)
         {
-            this.SleepWrite(sleepSec);
+            SleepWrite(sleepSec);
         }
 
         /// <summary>
         /// 睡眠后输出
         /// </summary>
         /// <param name="sleepSec"></param>
-        private async void SleepWrite(int sleepSec)
+        private static async void SleepWrite(int sleepSec)
         {
             await Task.Delay(sleepSec * 1000);
 

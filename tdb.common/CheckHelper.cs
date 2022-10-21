@@ -17,7 +17,7 @@ namespace tdb.common
         public static bool IsNumeric(Type dataType)
         {
             if (dataType == null)
-                throw new ArgumentNullException("dataType");
+                throw new ArgumentNullException(nameof(dataType));
 
             return (dataType == typeof(decimal)
                     || dataType == typeof(short)
@@ -29,6 +29,16 @@ namespace tdb.common
                     || dataType == typeof(sbyte)
                     || dataType == typeof(double)
                     || dataType == typeof(float)
+                    || dataType == typeof(decimal?)
+                    || dataType == typeof(short?)
+                    || dataType == typeof(int?)
+                    || dataType == typeof(long?)
+                    || dataType == typeof(ushort?)
+                    || dataType == typeof(uint?)
+                    || dataType == typeof(ulong?)
+                    || dataType == typeof(sbyte?)
+                    || dataType == typeof(double?)
+                    || dataType == typeof(float?)
                    );
         }
 

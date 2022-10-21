@@ -16,56 +16,10 @@ namespace tdb.nlog
     /// </summary>
     public class NLogger
     {
-        #region 单例
-
-        ///// <summary>
-        ///// 构造函数
-        ///// </summary>
-        ///// <param name="logger"></param>
-        //private NLogger(NLog.Logger logger)
-        //{
-        //    this.logger = logger;
-        //}
-
-        //private NLog.Logger logger = null;
-        //private static object _lock = new object();
-        //private static NLogger _ins = null;
-        ///// <summary>
-        ///// 单例
-        ///// </summary>
-        //public static NLogger Ins
-        //{
-        //    get
-        //    {
-        //        if (_ins == null)
-        //        {
-        //            lock (_lock)
-        //            {
-        //                if (_ins == null)
-        //                {
-        //                    _ins = new NLogger(NLog.LogManager.GetCurrentClassLogger());
-        //                }
-        //            }
-        //        }
-
-        //        return _ins;
-        //    }
-        //}
-
-        #endregion
-
         /// <summary>
         /// 日志
         /// </summary>
-        protected NLog.Logger logger = null;
-
-        ///// <summary>
-        ///// 构造函数
-        ///// </summary>
-        //public NLogger()
-        //{
-        //    this.logger = LogManager.GetCurrentClassLogger();
-        //}
+        protected readonly NLog.Logger logger;
 
         /// <summary>
         /// 构造函数
