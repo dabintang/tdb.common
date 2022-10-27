@@ -26,7 +26,8 @@ namespace tdb.common
             DefaultOptions.PropertyNameCaseInsensitive = true; //属性名不区分大小写
             DefaultOptions.PropertyNamingPolicy = null; //属性名原样输出（不改变大小写）
             DefaultOptions.ReadCommentHandling = JsonCommentHandling.Skip; //跳过注释
-            DefaultOptions.Converters.Add(new DateTimeJsonConverter("yyyy-MM-dd HH:mm:ss")); //日期格式
+            DefaultOptions.Converters.Add(new DateTimeJsonConverter("yyyy-MM-dd HH:mm:ss.fff")); //日期格式
+            DefaultOptions.Converters.Add(new TypeJsonConverter()); //Type类型序列化
         }
 
         /// <summary>
@@ -116,7 +117,7 @@ namespace tdb.common
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string ToStr<T>(this T value)
+        public static string ToStr<T>(this T? value)
         {
             if (value == null)
             {
@@ -132,34 +133,39 @@ namespace tdb.common
         /// <typeparam name="T"></typeparam>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static T? DeepClone<T>(this T value)
+        public static T? DeepClone<T>(this T? value)
         {
             if (value == null)
             {
                 return default;
             }
 
-            var jsonStr = JsonSerializer.Serialize(value, new JsonSerializerOptions() { IncludeFields = true });
-            return JsonSerializer.Deserialize<T>(jsonStr, new JsonSerializerOptions() { IncludeFields = true });
+            var jsonStr = value.SerializeJson();
+            return jsonStr.DeserializeJson<T>();
         }
 
         /// <summary>
-        /// json序列化默认格式
+        /// json序列化默认格式（不缩进）
         /// </summary>
         public readonly static JsonSerializerOptions DefaultOptions;
 
         /// <summary>
         /// 序列化为json字符串
+        /// （如value值为null，则转为字符串null）
         /// </summary>
         /// <typeparam name="TValue">要序列化的值的类型</typeparam>
-        /// <param name="value">需要序列号的值</param>
+        /// <param name="value">需要序列化的值</param>
         /// <param name="options">用于控制序列化行为的选项</param>
-        /// <returns>josn字符串</returns>
-        public static string SerializeJson<TValue>(this TValue value, JsonSerializerOptions? options = null)
+        /// <returns>json字符串</returns>
+        public static string SerializeJson<TValue>(this TValue? value, JsonSerializerOptions? options = null)
         {
+            if (value == null)
+            {
+                return "null";
+            }
+
             //如果未指定序列化选项，使用默认序列化选项
             options = options ?? DefaultOptions;
-
             return JsonSerializer.Serialize(value, options);
         }
 
@@ -170,11 +176,30 @@ namespace tdb.common
         /// <param name="json">json字符串</param>
         /// <param name="options">用于控制反序列化行为的选项</param>
         /// <returns>目标对象</returns>
-        public static TValue? DeserializeJson<TValue>(this string json, JsonSerializerOptions? options = null)
+        public static TValue? DeserializeJson<TValue>(this string? json, JsonSerializerOptions? options = null)
         {
+            //如果反序列化目标类型是string，直接返回
+            if (typeof(TValue) == typeof(string))
+            {
+                return (TValue?)Convert.ChangeType(json, typeof(TValue));
+            }
+
+            //如果是空字符串或字符串null
+            if ((string.IsNullOrEmpty(json) || json == "null"))
+            {
+                //如果TValue为可空类型
+                if (CheckHelper.IsNullableType(typeof(TValue)))
+                {
+                    return default(TValue?);
+                }
+                else
+                {
+                    throw new Exception($"无法把 {json} 反序列化为 {typeof(TValue)}");
+                }
+            }
+
             //如果未指定序列化选项，使用默认序列化选项
             options = options ?? DefaultOptions;
-
             return JsonSerializer.Deserialize<TValue>(json, options);
         }
 
@@ -185,11 +210,22 @@ namespace tdb.common
         /// <param name="returnType">反序列化目标类型</param>
         /// <param name="options">用于控制反序列化行为的选项</param>
         /// <returns>目标对象</returns>
-        public static object? DeserializeJson(this string json, Type returnType, JsonSerializerOptions? options = null)
+        public static object? DeserializeJson(this string? json, Type returnType, JsonSerializerOptions? options = null)
         {
+            //如果反序列化目标类型是string，直接返回
+            if (typeof(Type) == typeof(string))
+            {
+                return json;
+            }
+
+            //如果是空字符串或字符串null
+            if (string.IsNullOrEmpty(json) || json == "null")
+            {
+                return null;
+            }
+
             //如果未指定序列化选项，使用默认序列化选项
             options = options ?? DefaultOptions;
-
             return JsonSerializer.Deserialize(json, returnType, options);
         }
     }

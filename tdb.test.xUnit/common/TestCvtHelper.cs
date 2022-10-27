@@ -130,9 +130,12 @@ namespace tdb.test.xUnit.common
             obj.BirthDate = new DateTime(2022, 10, 14, 9, 12, 47);
             //序列化成json字符串
             var jsonStr = obj.SerializeJson();
-            var jsonText = "{\"Name\":\"张三\",\"BirthDate\":\"2022-10-14 09:12:47\",\"Amount\":44,\"Age\":33}";
-            
+            var jsonText = "{\"Name\":\"张三\",\"BirthDate\":\"2022-10-14 09:12:47.000\",\"Amount\":44,\"TypeField\":\"System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"Age\":33}";
             Assert.Equal(jsonStr, jsonText);
+
+            InnerTestCvtHelper obj2 = null;
+            var jsonStr2 = obj2.SerializeJson();
+            Assert.Equal("null", jsonStr2);
         }
 
         /// <summary>
@@ -142,13 +145,14 @@ namespace tdb.test.xUnit.common
         public void TestDeserializeJson1()
         {
             //json字符串1
-            var jsonText1 = "{\"Name\":\"张三\",\"BirthDate\":\"2022-10-14 09:12:47\",\"Amount\":44,\"Age\":33}";
+            var jsonText1 = "{\"Name\":\"张三\",\"BirthDate\":\"2022/10/14 09:12:47\",\"Amount\":44,\"TypeField\":\"System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"Age\":33}";
             //反序列化
             var obj1 = jsonText1.DeserializeJson<InnerTestCvtHelper>();
             Assert.Equal("张三", obj1.Name);
             Assert.Equal(new DateTime(2022, 10, 14, 9, 12, 47), obj1.BirthDate);
             Assert.Equal(44, obj1.Amount);
             Assert.Equal(33, obj1.Age);
+            Assert.Equal(typeof(string), obj1.TypeField);
 
             //json字符串2
             var jsonText2 = "{\"Name\":\"张三\",\"BirthDate\":\"2022-10-14\",\"Amount\":null,\"Age\":22}";
@@ -158,6 +162,15 @@ namespace tdb.test.xUnit.common
             Assert.Equal(new DateTime(2022, 10, 14), obj2.BirthDate);
             Assert.Null(obj2.Amount);
             Assert.Equal(22, obj2.Age);
+
+            var int3 = "".DeserializeJson<int?>();
+            Assert.Null(int3);
+            var int4 = "null".DeserializeJson<int?>();
+            Assert.Null(int4);
+            var obj5 = "".DeserializeJson<InnerTestCvtHelper>();
+            Assert.Null(obj5);
+            var obj6 = "null".DeserializeJson<InnerTestCvtHelper>();
+            Assert.Null(obj6);
         }
 
         /// <summary>
@@ -183,6 +196,15 @@ namespace tdb.test.xUnit.common
             Assert.Equal(new DateTime(2022, 10, 14), obj2.BirthDate);
             Assert.Null(obj2.Amount);
             Assert.Equal(22, obj2.Age);
+
+            var int3 = "".DeserializeJson<int?>();
+            Assert.Null(int3);
+            var int4 = "null".DeserializeJson<int?>();
+            Assert.Null(int4);
+            var obj5 = "".DeserializeJson<InnerTestCvtHelper>();
+            Assert.Null(obj5);
+            var obj6 = "null".DeserializeJson<InnerTestCvtHelper>();
+            Assert.Null(obj6);
         }
 
         /// <summary>
@@ -196,7 +218,8 @@ namespace tdb.test.xUnit.common
                 Name = "张三",
                 Age = 33,
                 BirthDate = DateTime.Now,
-                Amount = 44M
+                Amount = 44M,
+                TypeField = typeof(string)
             };
         }
 
@@ -231,6 +254,11 @@ namespace tdb.test.xUnit.common
             /// 
             /// </summary>
             private string Secret { get; set; } = "sfasfaf胜多负少";
+
+            /// <summary>
+            /// 类型字段
+            /// </summary>
+            public Type TypeField { get; set; }
         }
 
         #endregion

@@ -46,7 +46,7 @@ namespace tdb.common.Json
         /// <returns></returns>
         public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            if (reader.TokenType == JsonTokenType.String && DateTime.TryParseExact(reader.GetString(), format, null, System.Globalization.DateTimeStyles.None, out DateTime date))
+            if (reader.TokenType == JsonTokenType.String && DateTime.TryParse(reader.GetString(), out DateTime date))
             {
                 return date;
             }
