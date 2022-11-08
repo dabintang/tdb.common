@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tdb.common;
+using static tdb.test.xUnit.common.TestCheckHelper;
 
 namespace tdb.test.xUnit.common
 {
@@ -39,5 +40,47 @@ namespace tdb.test.xUnit.common
             Assert.True(CheckHelper.IsNullableType(typeof(string)));
             Assert.True(CheckHelper.IsNullableType(typeof(TestCheckHelper)));
         }
+
+        /// <summary>
+        /// 测试 IsSubclassOf 方法
+        /// </summary>
+        [Fact]
+        public void TestIsSubclassOf()
+        {
+            Assert.True(CheckHelper.IsSubclassOf(typeof(ClassB), typeof(ClassA)));
+            Assert.False(CheckHelper.IsSubclassOf(typeof(ClassA), typeof(ClassB)));
+            Assert.True(CheckHelper.IsSubclassOf(typeof(ClassD<string>), typeof(ClassC<string>)));
+            Assert.False(CheckHelper.IsSubclassOf(typeof(ClassC<string>), typeof(ClassD<string>)));
+            Assert.False(CheckHelper.IsSubclassOf(typeof(ClassD<int>), typeof(ClassA)));
+            Assert.True(CheckHelper.IsSubclassOf(typeof(ClassE), typeof(ClassC<int>)));
+            Assert.False(CheckHelper.IsSubclassOf(typeof(ClassC<int>), typeof(ClassE)));
+            Assert.True(CheckHelper.IsSubclassOf(typeof(ClassE), typeof(ClassC<>)));
+            Assert.False(CheckHelper.IsSubclassOf(typeof(ClassC<>), typeof(ClassE)));
+            Assert.False(CheckHelper.IsSubclassOf(typeof(ClassE), typeof(int)));
+        }
+
+        #region 定义
+
+        public class ClassA
+        {
+        }
+
+        public class ClassB : ClassA
+        {
+        }
+
+        public class ClassC<T>
+        {
+        }
+
+        public class ClassD<T> : ClassC<T>
+        {
+        }
+
+        public class ClassE : ClassC<int>
+        {
+        }
+
+        #endregion
     }
 }

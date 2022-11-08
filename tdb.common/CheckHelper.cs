@@ -52,5 +52,32 @@ namespace tdb.common
             return (dataType.IsClass || dataType.IsInterface ||
                 (dataType.IsGenericType && dataType.GetGenericTypeDefinition().Equals(typeof(Nullable<>))));
         }
+
+        /// <summary>
+        /// 判断类型type是否派生自基类baseType
+        /// </summary>
+        /// <param name="type">类型</param>
+        /// <param name="baseType">基类</param>
+        /// <returns></returns>
+        public static bool IsSubclassOf(Type type, Type baseType)
+        {
+            //如果基类不是泛型类型
+            if (baseType.IsGenericType == false)
+            {
+                return type.IsSubclassOf(baseType);
+            }
+
+            if (type.IsGenericType && (type == baseType || type.GetGenericTypeDefinition() == baseType))
+            {
+                return true;
+            }
+
+            if (type.BaseType != null)
+            {
+                return IsSubclassOf(type.BaseType, baseType);
+            }
+
+            return false;
+        }
     }
 }

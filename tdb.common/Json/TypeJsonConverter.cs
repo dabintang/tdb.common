@@ -31,10 +31,15 @@ namespace tdb.common.Json
         /// <param name="typeToConvert"></param>
         /// <param name="options"></param>
         /// <returns></returns>
-        public override Type Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Type? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            var str = reader.GetString();
-            var type = Type.GetType(str);
+            var typeName = reader.GetString();
+            if (string.IsNullOrWhiteSpace(typeName))
+            {
+                return null;
+            }
+
+            var type = Type.GetType(typeName);
 
             return type;
         }
