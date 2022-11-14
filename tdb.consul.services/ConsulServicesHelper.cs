@@ -80,14 +80,31 @@ namespace tdb.consul.services
         /// <param name="consulPort">consul服务端口</param>
         /// <param name="serviceName">服务在consul上的服务名</param>
         /// <returns></returns>
-        public static CatalogService[] FindServices(string consulIP, int consulPort, string serviceName)
+        public static List<CatalogService> FindServices(string consulIP, int consulPort, string serviceName)
         {
             using var consul = new ConsulClient(c =>
             {
                 c.Address = new Uri($"http://{consulIP}:{consulPort}"); //Consul地址
             });
+
+            var lstServiceName = new List<string>();
+
             //获取服务
-            var services = consul.Catalog.Service(serviceName).Result.Response;
+            if (string.IsNullOrWhiteSpace(serviceName))
+            {
+                var dicService = consul.Catalog.Services().Result.Response;
+                lstServiceName.AddRange(dicService.Keys);
+            }
+            else
+            {
+                lstServiceName.Add(serviceName);
+            }
+            var services = new List<CatalogService>();
+            foreach (var name in lstServiceName)
+            {
+                services.AddRange(consul.Catalog.Service(name).Result.Response);
+            }
+          
             return services;
         }
     }

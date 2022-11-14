@@ -117,6 +117,16 @@ namespace tdb.test.xUnit.common
             //深度复制
             var copyObj = obj.DeepClone();
             Assert.Equal(obj.SerializeJson(), copyObj.SerializeJson());
+
+            var text = "娃哈哈123abc";
+            //深度复制
+            var copyText = text.DeepClone();
+            Assert.Equal(text, copyText);
+
+            var now = DateTime.Now;
+            //深度复制
+            var copyNow = now.DeepClone();
+            Assert.Equal(now.ToString("yyyyMMddHHmmssfff"), copyNow.ToString("yyyyMMddHHmmssfff"));
         }
 
         /// <summary>
@@ -130,7 +140,7 @@ namespace tdb.test.xUnit.common
             obj.BirthDate = new DateTime(2022, 10, 14, 9, 12, 47);
             //序列化成json字符串
             var jsonStr = obj.SerializeJson();
-            var jsonText = "{\"Name\":\"张三\",\"BirthDate\":\"2022-10-14 09:12:47.000\",\"Amount\":44,\"TypeField\":\"System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"Age\":33}";
+            var jsonText = "{\"Name\":\"张三\",\"BirthDate\":\"2022-10-14 09:12:47.000\",\"Amount\":44,\"TypeField\":\"System.String, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"Age\":33}";
             Assert.Equal(jsonStr, jsonText);
 
             InnerTestCvtHelper obj2 = null;
@@ -145,7 +155,7 @@ namespace tdb.test.xUnit.common
         public void TestDeserializeJson1()
         {
             //json字符串1
-            var jsonText1 = "{\"Name\":\"张三\",\"BirthDate\":\"2022/10/14 09:12:47\",\"Amount\":44,\"TypeField\":\"System.String, System.Private.CoreLib, Version=6.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"Age\":33}";
+            var jsonText1 = "{\"Name\":\"张三\",\"BirthDate\":\"2022/10/14 09:12:47\",\"Amount\":44,\"TypeField\":\"System.String, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"Age\":33}";
             //反序列化
             var obj1 = jsonText1.DeserializeJson<InnerTestCvtHelper>();
             Assert.Equal("张三", obj1.Name);

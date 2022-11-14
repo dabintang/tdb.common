@@ -46,7 +46,7 @@ namespace tdb.test.Controllers
         [HttpPost]
         public IActionResult RegisterToConsul()
         {
-            ConsulServicesHelper.RegisterToConsul(consulIP, consulPort, "127.0.0.1", 19001, "TestServiceName", "http://127.0.0.1:19001/api/TestConsul/HealthCheck",
+            ConsulServicesHelper.RegisterToConsul(consulIP, consulPort, "127.0.0.1", 31000, "TestServiceName", "http://127.0.0.1:31000/api/TestConsul/HealthCheck",
                 TimeSpan.FromMinutes(1), TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(5), _appLifetime);
 
             return Ok();
@@ -69,12 +69,10 @@ namespace tdb.test.Controllers
         /// <summary>
         /// 获取配置
         /// </summary>
-        /// <param name="consulIP">consul IP</param>
-        /// <param name="consulPort">consul Port</param>
         /// <param name="prefixKey">key前缀</param>
         /// <returns></returns>
         [HttpGet]
-        public async Task<ConsulConfig> GetConfig(string consulIP, int consulPort, string prefixKey)
+        public async Task<ConsulConfig> GetConfig(string prefixKey)
         {
             var config = await ConsulConfigHelper.GetConfigAsync<ConsulConfig>(consulIP, consulPort, prefixKey);
             return config;
@@ -83,12 +81,10 @@ namespace tdb.test.Controllers
         /// <summary>
         /// 备份配置
         /// </summary>
-        /// <param name="consulIP">consul IP</param>
-        /// <param name="consulPort">consul Port</param>
         /// <param name="prefixKey">key前缀</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<string> BackupConfig(string consulIP, int consulPort, string prefixKey)
+        public async Task<string> BackupConfig(string prefixKey)
         {
             var config = await ConsulConfigHelper.GetConfigAsync<ConsulConfig>(consulIP, consulPort, prefixKey);
             var jsonStr = config.SerializeJson();
@@ -107,13 +103,11 @@ namespace tdb.test.Controllers
         /// <summary>
         /// 还原配置
         /// </summary>
-        /// <param name="consulIP">consul IP</param>
-        /// <param name="consulPort">consul Port</param>
         /// <param name="prefixKey">key前缀</param>
         /// <param name="file">配置文件</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<bool> RestoreConfig(string consulIP, int consulPort, string prefixKey, IFormFile file)
+        public async Task<bool> RestoreConfig(string prefixKey, IFormFile file)
         {
             using var stream = file.OpenReadStream();
             stream.Seek(0, SeekOrigin.Begin);

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -9,7 +9,7 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>6.0.0.4</Version>
+    <Version>7.0.0.2</Version>
     <Authors>tangdabin</Authors>
     <Company>tdb</Company>
     <Product>tdb</Product>
@@ -17,7 +17,7 @@
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
     <PackageTags>tdb</PackageTags>
-    <PackageReleaseNotes>json序列化和反序列化方法添加支持：null对象、Type类型</PackageReleaseNotes>
+    <PackageReleaseNotes>string类型序列化为json时不在收尾加双引号</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AnalysisLevel>5.0</AnalysisLevel>
   </PropertyGroup>

@@ -164,6 +164,12 @@ namespace tdb.common
                 return "null";
             }
 
+            //如果序列化类型是string，直接返回
+            if (typeof(TValue) == typeof(string))
+            {
+                return (string)Convert.ChangeType(value, typeof(string));
+            }
+
             //如果未指定序列化选项，使用默认序列化选项
             options = options ?? DefaultOptions;
             return JsonSerializer.Serialize(value, options);
