@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace tdb.common
@@ -29,20 +30,21 @@ namespace tdb.common
             return fullFileName;
         }
 
-        /// <summary>
-        /// 获取本地IP
-        /// </summary>
-        /// <returns></returns>
-        public static string GetLocalIP()
-        {
-            var ip = NetworkInterface.GetAllNetworkInterfaces()
-                        .Select(p => p.GetIPProperties())
-                        .SelectMany(p => p.UnicastAddresses)
-                        .Where(p => p.Address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(p.Address))
-                        .OrderByDescending(p => p.DuplicateAddressDetectionState)
-                        .FirstOrDefault()?.Address.ToString() ?? "";
-            return ip;
-        }
+        ///// <summary>
+        ///// 获取本地IP
+        ///// </summary>
+        ///// <returns></returns>
+        //public static List<string> GetLocalIP()
+        //{
+        //    var ip = NetworkInterface.GetAllNetworkInterfaces()
+        //                .Select(p => p.GetIPProperties())
+        //                .SelectMany(p => p.UnicastAddresses)
+        //                .Where(p => p.Address.AddressFamily == AddressFamily.InterNetwork && !IPAddress.IsLoopback(p.Address))
+        //                //.OrderByDescending(p => p.DuplicateAddressDetectionState)
+        //                .FirstOrDefault()?.Address.ToString() ?? "";
+
+        //    return ip;
+        //}
 
         /// <summary>
         /// 反射方式给公开属性或公开字段赋值

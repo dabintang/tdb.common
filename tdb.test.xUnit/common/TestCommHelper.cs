@@ -37,15 +37,15 @@ namespace tdb.test.xUnit.common
             this.output.WriteLine($"FullFileName：{fullFileName}");
         }
 
-        /// <summary>
-        /// 测试方法 GetLocalIP
-        /// </summary>
-        [Fact]
-        public void TestGetLocalIP()
-        {
-            var ip = CommHelper.GetLocalIP();
-            this.output.WriteLine($"LocalIP：{ip}");
-        }
+        ///// <summary>
+        ///// 测试方法 GetLocalIP
+        ///// </summary>
+        //[Fact]
+        //public void TestGetLocalIP()
+        //{
+        //    var ip = CommHelper.GetLocalIP();
+        //    this.output.WriteLine($"LocalIP：{ip}");
+        //}
 
         /// <summary>
         /// 测试方法 ReflectSet
@@ -186,10 +186,10 @@ namespace tdb.test.xUnit.common
             ///// </summary>
             //private int pAge;
 
-            /// <summary>
-            /// 
-            /// </summary>
-            private string pName { get; set; }
+            ///// <summary>
+            ///// 
+            ///// </summary>
+            //private string pName { get; set; }
         }
     }
 }

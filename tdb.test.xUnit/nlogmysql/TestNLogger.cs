@@ -32,7 +32,7 @@ namespace tdb.test.xUnit.nlogmysql
         public TestNLogger(ITestOutputHelper output)
         {
             this.log = new tdb.nlog.mysql.NLogger("server=127.0.0.1;database=tdb.logs;user id=root;password=123456;Pooling=True;Allow User Variables=True;", 
-                0, CommHelper.GetLocalIP(), @"nlogmysql\NLog.config");
+                0, "127.0.0.1", @"nlogmysql\NLog.config");
             this.output = output;
         }
 

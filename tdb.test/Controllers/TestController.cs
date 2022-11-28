@@ -74,13 +74,13 @@ namespace tdb.test.Controllers
             }
         }
 
-        /// <summary>
-        /// 获取本地IP
-        /// </summary>
-        [HttpGet]
-        public string GetLocalIP()
-        {
-            return CommHelper.GetLocalIP();
-        }
+        ///// <summary>
+        ///// 获取本地IP
+        ///// </summary>
+        //[HttpGet]
+        //public string GetLocalIP()
+        //{
+        //    return CommHelper.GetLocalIP();
+        //}
     }
 }
