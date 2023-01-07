@@ -9,7 +9,7 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>7.0.0.2</Version>
+    <Version>7.0.0.3</Version>
     <Authors>tangdabin</Authors>
     <Company>tdb</Company>
     <Product>tdb</Product>
@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.1.0" />
+    <PackageReference Include="NLog" Version="5.1.1" />
   </ItemGroup>
 
   <ItemGroup>

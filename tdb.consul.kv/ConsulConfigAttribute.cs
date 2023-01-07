@@ -8,7 +8,7 @@ namespace tdb.consul.kv
     /// consul配置特性
     /// </summary>
     [AttributeUsage(AttributeTargets.Property)]
-    public class ConsulConfigAttribute : Attribute
+    public class ConsulConfigAttribute : Attribute, IConsulConfigAttribute
     {
         /// <summary>
         /// consul配置key

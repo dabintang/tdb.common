@@ -15,12 +15,15 @@ namespace tdb.consul.kv
         /// <summary>
         /// 获取consul上的配置信息
         /// </summary>
-        /// <typeparam name="T">consul配置信息类型</typeparam>
+        /// <typeparam name="TConfig">consul配置信息类型</typeparam>
+        /// <typeparam name="TConsulConfigAttribute">consul配置特效接口</typeparam>
         /// <param name="consulIP">consul服务IP</param>
         /// <param name="consulPort">consul服务端口</param>
         /// <param name="prefixKey">key前缀，一般用来区分不同服务</param>
         /// <returns>consul配置信息</returns>
-        public static async Task<T> GetConfigAsync<T>(string consulIP, int consulPort, string prefixKey) where T : class, new()
+        public static async Task<TConfig> GetConfigAsync<TConfig, TConsulConfigAttribute>(string consulIP, int consulPort, string prefixKey) 
+            where TConfig : class, new() 
+            where TConsulConfigAttribute: Attribute, IConsulConfigAttribute
         {
             Dictionary<string, string> dicPair;
             using (var kv = new ConsulKV(consulIP, consulPort, prefixKey))
@@ -30,16 +33,16 @@ namespace tdb.consul.kv
             }
 
             //创建对象
-            var obj = new T();
+            var obj = new TConfig();
 
-            Type type = typeof(T);
+            Type type = typeof(TConfig);
             //获取对象属性
             var pros = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             //给对象属性赋值
             foreach (var pro in pros)
             {
                 //特性
-                var attr = pro.GetCustomAttributes<ConsulConfigAttribute>().FirstOrDefault();
+                var attr = pro.GetCustomAttributes<TConsulConfigAttribute>().FirstOrDefault();
                 var key = $"{prefixKey}{attr?.Key}";
                 if (attr == null || dicPair.ContainsKey(key) == false)
                 {
@@ -73,18 +76,21 @@ namespace tdb.consul.kv
         /// <summary>
         /// 设置配置信息
         /// </summary>
-        /// <typeparam name="T">consul配置信息类型</typeparam>
+        /// <typeparam name="TConfig">consul配置信息类型</typeparam>
+        /// <typeparam name="TConsulConfigAttribute">consul配置特效接口</typeparam>
         /// <param name="consulIP">consul服务IP</param>
         /// <param name="consulPort">consul服务端口</param>
         /// <param name="config">consul配置信息</param>
         /// <param name="prefixKey">key前缀，一般用来区分不同服务</param>
         /// <returns></returns>
-        public static async Task<bool> PutConfig<T>(string consulIP, int consulPort, T config, string prefixKey) where T : class
+        public static async Task<bool> PutConfig<TConfig, TConsulConfigAttribute>(string consulIP, int consulPort, TConfig config, string prefixKey) 
+            where TConfig : class
+            where TConsulConfigAttribute : Attribute, IConsulConfigAttribute
         {
             //配置信息字典
             var dicConfig = new Dictionary<string, object?>();
 
-            Type type = typeof(T);
+            Type type = typeof(TConfig);
             //获取对象属性
             var pros = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
             if (pros == null)
@@ -96,7 +102,7 @@ namespace tdb.consul.kv
             foreach (var pro in pros)
             {
                 //特性
-                var attr = pro.GetCustomAttributes<ConsulConfigAttribute>().FirstOrDefault();
+                var attr = pro.GetCustomAttributes<TConsulConfigAttribute>().FirstOrDefault();
                 if (attr == null)
                 {
                     continue;

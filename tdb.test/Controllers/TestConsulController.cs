@@ -74,7 +74,7 @@ namespace tdb.test.Controllers
         [HttpGet]
         public async Task<ConsulConfig> GetConfig(string prefixKey)
         {
-            var config = await ConsulConfigHelper.GetConfigAsync<ConsulConfig>(consulIP, consulPort, prefixKey);
+            var config = await ConsulConfigHelper.GetConfigAsync<ConsulConfig, ConsulConfigAttribute>(consulIP, consulPort, prefixKey);
             return config;
         }
 
@@ -86,7 +86,7 @@ namespace tdb.test.Controllers
         [HttpPost]
         public async Task<string> BackupConfig(string prefixKey)
         {
-            var config = await ConsulConfigHelper.GetConfigAsync<ConsulConfig>(consulIP, consulPort, prefixKey);
+            var config = await ConsulConfigHelper.GetConfigAsync<ConsulConfig, ConsulConfigAttribute>(consulIP, consulPort, prefixKey);
             var jsonStr = config.SerializeJson();
 
             var fullFileName = CommHelper.GetFullFileName($"backup\\kv\\config_{DateTime.Now:yyyyMMddHHmmss}.json");
@@ -116,7 +116,7 @@ namespace tdb.test.Controllers
 
             var json = Encoding.UTF8.GetString(bytes);
             var config = json.DeserializeJson<ConsulConfig>();
-            return await ConsulConfigHelper.PutConfig(consulIP, consulPort, config, prefixKey);
+            return await ConsulConfigHelper.PutConfig<ConsulConfig, ConsulConfigAttribute>(consulIP, consulPort, config, prefixKey);
         }
     }
 
