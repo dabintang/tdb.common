@@ -9,7 +9,7 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>7.0.0.3</Version>
+    <Version>7.0.0.4</Version>
     <Authors>tangdabin</Authors>
     <Company>tdb</Company>
     <Product>tdb</Product>
@@ -17,13 +17,13 @@
     <Copyright></Copyright>
     <PackageProjectUrl>https://github.com/dabintang/tdb.common</PackageProjectUrl>
     <PackageTags>tdb</PackageTags>
-    <PackageReleaseNotes>升级到.NET7</PackageReleaseNotes>
+    <PackageReleaseNotes>更新组件</PackageReleaseNotes>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AnalysisLevel>5.0</AnalysisLevel>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NLog" Version="5.1.1" />
+    <PackageReference Include="NLog" Version="5.1.2" />
   </ItemGroup>
 
   <ItemGroup>
