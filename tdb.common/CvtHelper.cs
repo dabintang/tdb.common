@@ -135,13 +135,41 @@ namespace tdb.common
         /// <returns></returns>
         public static T? DeepClone<T>(this T? value)
         {
+            return DeepCloneWithDeepCloner(value);
+        }
+
+        ///// <summary>
+        ///// 深度复制
+        ///// </summary>
+        ///// <typeparam name="T"></typeparam>
+        ///// <param name="value"></param>
+        ///// <returns></returns>
+        //private static T? DeepCloneWithJson<T>(this T? value)
+        //{
+        //    if (value == null)
+        //    {
+        //        return default;
+        //    }
+
+        //    var jsonStr = value.SerializeJson();
+        //    return jsonStr.DeserializeJson<T>();
+        //}
+
+        /// <summary>
+        /// 深度复制（DeepCloner）【比序列化为json再反序列化的方式快8倍左右】
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private static T? DeepCloneWithDeepCloner<T>(this T? value)
+        {
             if (value == null)
             {
                 return default;
             }
 
-            var jsonStr = value.SerializeJson();
-            return jsonStr.DeserializeJson<T>();
+            var cloneValue = Force.DeepCloner.DeepClonerExtensions.DeepClone(value);
+            return cloneValue;
         }
 
         /// <summary>
@@ -171,7 +199,7 @@ namespace tdb.common
             }
 
             //如果未指定序列化选项，使用默认序列化选项
-            options = options ?? DefaultOptions;
+            options ??= DefaultOptions;
             return JsonSerializer.Serialize(value, options);
         }
 
@@ -196,7 +224,7 @@ namespace tdb.common
                 //如果TValue为可空类型
                 if (CheckHelper.IsNullableType(typeof(TValue)))
                 {
-                    return default(TValue?);
+                    return default;
                 }
                 else
                 {
@@ -205,7 +233,7 @@ namespace tdb.common
             }
 
             //如果未指定序列化选项，使用默认序列化选项
-            options = options ?? DefaultOptions;
+            options ??= DefaultOptions;
             return JsonSerializer.Deserialize<TValue>(json, options);
         }
 
@@ -231,7 +259,7 @@ namespace tdb.common
             }
 
             //如果未指定序列化选项，使用默认序列化选项
-            options = options ?? DefaultOptions;
+            options ??= DefaultOptions;
             return JsonSerializer.Deserialize(json, returnType, options);
         }
     }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using tdb.common;
+using Xunit.Abstractions;
 
 namespace tdb.test.xUnit.common
 {
@@ -12,6 +14,20 @@ namespace tdb.test.xUnit.common
     /// </summary>
     public class TestCvtHelper
     {
+        ///// <summary>
+        ///// 输出
+        ///// </summary>
+        //private readonly ITestOutputHelper output;
+
+        ///// <summary>
+        ///// 构造函数
+        ///// </summary>
+        ///// <param name="_output"></param>
+        //public TestCvtHelper(ITestOutputHelper output)
+        //{
+        //    this.output = output;
+        //}
+
         /// <summary>
         /// 测试方法 ToDictionary
         /// </summary>
@@ -117,17 +133,115 @@ namespace tdb.test.xUnit.common
             //深度复制
             var copyObj = obj.DeepClone();
             Assert.Equal(obj.SerializeJson(), copyObj.SerializeJson());
+            copyObj.LstStr = new List<string>() { Guid.NewGuid().ToStr() };
+            Assert.NotEqual(obj.LstStr, copyObj.LstStr);
+            copyObj.DicDateTime.Add("c", DateTime.Now);
+            Assert.NotEqual(obj.DicDateTime.Count, copyObj.DicDateTime.Count);
 
             var text = "娃哈哈123abc";
             //深度复制
             var copyText = text.DeepClone();
             Assert.Equal(text, copyText);
+            copyText += "aa";
+            Assert.NotEqual(text, copyText);
 
             var now = DateTime.Now;
             //深度复制
             var copyNow = now.DeepClone();
             Assert.Equal(now.ToString("yyyyMMddHHmmssfff"), copyNow.ToString("yyyyMMddHHmmssfff"));
+            copyNow = copyNow.AddMinutes(1);
+            Assert.NotEqual(now, copyNow);
         }
+
+        ///// <summary>
+        ///// 测试方法 DeepCloneWithJson
+        ///// </summary>
+        //[Fact]
+        //public void TestDeepCloneWithJson()
+        //{
+        //    //获取对象
+        //    var obj = GetObject();
+        //    //深度复制
+        //    var copyObj = obj.DeepCloneWithJson();
+        //    Assert.Equal(obj.SerializeJson(), copyObj.SerializeJson());
+        //    copyObj.LstStr = new List<string>() { Guid.NewGuid().ToStr() };
+        //    Assert.NotEqual(obj.LstStr, copyObj.LstStr);
+        //    copyObj.DicDateTime.Add("c", DateTime.Now);
+        //    Assert.NotEqual(obj.DicDateTime.Count, copyObj.DicDateTime.Count);
+
+        //    var text = "娃哈哈123abc";
+        //    //深度复制
+        //    var copyText = text.DeepCloneWithJson();
+        //    Assert.Equal(text, copyText);
+        //    copyText += "aa";
+        //    Assert.NotEqual(text, copyText);
+
+        //    var now = DateTime.Now;
+        //    //深度复制
+        //    var copyNow = now.DeepCloneWithJson();
+        //    Assert.Equal(now.ToString("yyyyMMddHHmmssfff"), copyNow.ToString("yyyyMMddHHmmssfff"));
+        //    copyNow = copyNow.AddMinutes(1);
+        //    Assert.NotEqual(now, copyNow);
+        //}
+
+        ///// <summary>
+        ///// 测试方法 DeepCloneWithDeepCloner
+        ///// </summary>
+        //[Fact]
+        //public void TestDeepCloneWithDeepCloner()
+        //{
+        //    //获取对象
+        //    var obj = GetObject();
+        //    //深度复制
+        //    var copyObj = obj.DeepCloneWithDeepCloner();
+        //    Assert.Equal(obj.SerializeJson(), copyObj.SerializeJson());
+        //    copyObj.LstStr = new List<string>() { Guid.NewGuid().ToStr() };
+        //    Assert.NotEqual(obj.LstStr, copyObj.LstStr);
+        //    copyObj.DicDateTime.Add("c", DateTime.Now);
+        //    Assert.NotEqual(obj.DicDateTime.Count, copyObj.DicDateTime.Count);
+
+        //    var text = "娃哈哈123abc";
+        //    //深度复制
+        //    var copyText = text.DeepCloneWithDeepCloner();
+        //    Assert.Equal(text, copyText);
+        //    copyText += "aa";
+        //    Assert.NotEqual(text, copyText);
+
+        //    var now = DateTime.Now;
+        //    //深度复制
+        //    var copyNow = now.DeepCloneWithDeepCloner();
+        //    Assert.Equal(now.ToString("yyyyMMddHHmmssfff"), copyNow.ToString("yyyyMMddHHmmssfff"));
+        //    copyNow = copyNow.AddMinutes(1);
+        //    Assert.NotEqual(now, copyNow);
+        //}
+
+        ///// <summary>
+        ///// 测试深度复制速度
+        ///// </summary>
+        //[Fact]
+        //public void TestDeepClone2()
+        //{
+        //    //获取对象
+        //    var obj = GetObject();
+        //    Stopwatch sw = Stopwatch.StartNew();
+        //    int count = 10000;
+
+        //    sw.Start();
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var cloneValue = obj.DeepCloneWithDeepCloner();
+        //    }
+        //    sw.Stop();
+        //    this.output.WriteLine($"DeepCloneWithDeepCloner：{sw.ElapsedMilliseconds} ms");
+
+        //    sw.Restart();
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var cloneValue = obj.DeepCloneWithJson();
+        //    }
+        //    sw.Stop();
+        //    this.output.WriteLine($"DeepCloneWithJson：{sw.ElapsedMilliseconds} ms");
+        //}
 
         /// <summary>
         /// 测试方法 SerializeJson
@@ -140,8 +254,8 @@ namespace tdb.test.xUnit.common
             obj.BirthDate = new DateTime(2022, 10, 14, 9, 12, 47);
             //序列化成json字符串
             var jsonStr = obj.SerializeJson();
-            var jsonText = "{\"Name\":\"张三\",\"BirthDate\":\"2022-10-14 09:12:47.000\",\"Amount\":44,\"TypeField\":\"System.String, System.Private.CoreLib, Version=7.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e\",\"Age\":33}";
-            Assert.Equal(jsonStr, jsonText);
+            var objStr = jsonStr.DeserializeJson<InnerTestCvtHelper>();
+            Assert.Equal(jsonStr, objStr.SerializeJson());
 
             InnerTestCvtHelper obj2 = null;
             var jsonStr2 = obj2.SerializeJson();
@@ -269,6 +383,57 @@ namespace tdb.test.xUnit.common
             /// 类型字段
             /// </summary>
             public Type TypeField { get; set; }
+
+            /// <summary>
+            /// 字符串列表
+            /// </summary>
+            public List<string> LstStr { get; set; } = new List<string>() { "A", "B", "C" };
+
+            /// <summary>
+            /// 日期字典
+            /// </summary>
+            public Dictionary<string, DateTime> DicDateTime = new() { { "a", DateTime.Now.AddDays(1) }, { "B", DateTime.Now.AddSeconds(10) } };
+
+            /// <summary>
+            /// 内部类列表
+            /// </summary>
+            public List<ClassInner2> LstClassInner2 { get; set; } = new List<ClassInner2>() { new ClassInner2(), new ClassInner2() };
+
+            /// <summary>
+            /// 内部类字典
+            /// </summary>
+            public Dictionary<string, ClassInner2> DicClassInner2 = new() { { "1", new ClassInner2() }, { "B2", new ClassInner2() } };
+
+            /// <summary>
+            /// 内部类
+            /// </summary>
+            public class ClassInner2
+            {
+                /// <summary>
+                /// 
+                /// </summary>
+                public string Str { get; set; } = Guid.NewGuid().ToStr();
+
+                /// <summary>
+                /// 
+                /// </summary>
+                public int Num = 123;
+
+                /// <summary>
+                /// 
+                /// </summary>
+                public DateTime BirthDate { get; set; } = DateTime.Now;
+
+                /// <summary>
+                /// 
+                /// </summary>
+                public decimal? Amount { get; set; }
+
+                /// <summary>
+                /// 字符串列表
+                /// </summary>
+                public List<string> LstStr2 { get; set; } = new List<string>() { "a", "2", "C" };
+            }
         }
 
         #endregion

@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Consul" Version="1.6.10.8" />
+    <PackageReference Include="Consul" Version="1.6.10.9" />
   </ItemGroup>
 
   <ItemGroup>
