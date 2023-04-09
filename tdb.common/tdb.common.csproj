@@ -28,5 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="DeepCloner" Version="0.10.4" />
+    <PackageReference Include="Hashids.net" Version="1.7.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="7.0.0" />
   </ItemGroup>
 </Project>
