@@ -9,7 +9,7 @@
   <PropertyGroup>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <Version>7.0.0.10</Version>
+    <Version>7.0.0.11</Version>
     <Authors>tangdabin</Authors>
     <Company>tdb</Company>
     <Product>tdb</Product>
@@ -23,7 +23,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.33" />
+    <PackageReference Include="MySql.Data" Version="8.1.0" />
     <PackageReference Include="NLog.Database" Version="5.2.2" />
   </ItemGroup>
 
